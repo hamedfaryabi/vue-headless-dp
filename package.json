@@ -1,0 +1,29 @@
+{
+  "name": "vue-headless-datepicker",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/vue-headless-datepicker.umd.cjs",
+  "module": "./dist/vue-headless-datepicker.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "vue-tsc && vite build"
+  },
+  "peerDependencies": {
+    "date-fns": "^2.30.0",
+    "defu": "^6.1.2",
+    "vue": "^3.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.6",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5",
+    "vite-plugin-dts": "^3.4.0",
+    "vue-tsc": "^1.8.5"
+  }
+}
+
