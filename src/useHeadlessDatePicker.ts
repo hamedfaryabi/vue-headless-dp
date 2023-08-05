@@ -13,7 +13,8 @@ import {
   isThisMonth,
   subDays,
   addDays,
-  getDay,
+  isEqual,
+  set,
 } from "date-fns";
 import { defu } from "defu";
 
@@ -23,13 +24,27 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     initialMonth: undefined,
     initialYear: undefined,
     equalWeeks: true,
+    selected: undefined,
   };
 
   _options = defu(options, _options);
+
+  const zeroTime = (date: Date): Date => {
+    return set(date, {
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+      milliseconds: 0,
+    });
+  };
+
   const dateToDay = (date: Date): DPDay => {
     const weekIndex = +format(date, "c", {
       weekStartsOn: _options.weekStart,
     });
+
+    const isSelected =
+      _options.selected && isEqual(zeroTime(date), zeroTime(_options.selected));
 
     return {
       date,
@@ -42,6 +57,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
         }),
       },
       inMonth: isThisMonth(date),
+      selected: isSelected || false,
     };
   };
 
@@ -141,6 +157,14 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     _options.initialYear = year;
   };
 
+  const setSelected = (date: Date) => {
+    _options.selected = zeroTime(date);
+  };
+
+  const getSelected = (): Date | null => {
+    return _options.selected || null;
+  };
+
   return {
     getMonthOfDate,
     getCurrentMonth,
@@ -148,5 +172,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     setMonth,
     setYear,
     setMonthYear,
+    setSelected,
+    getSelected,
   };
 }

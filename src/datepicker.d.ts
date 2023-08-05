@@ -38,6 +38,8 @@ export interface DPOptions {
    * @memberof DPOptions
    */
   equalWeeks?: boolean;
+
+  selected?: Date;
 }
 
 export type DPMonthName = {
@@ -55,6 +57,7 @@ export interface DPDay {
   today: boolean;
   weekName: DPDPDayInWeekName;
   inMonth: boolean;
+  selected: boolean;
 }
 
 export interface DPWeek {
