@@ -125,9 +125,28 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     return getMonthOfDate(d);
   };
 
+  const setMonth = (month: DPOptions["initialMonth"]): void => {
+    _options.initialMonth = month;
+  };
+
+  const setYear = (year: DPOptions["initialYear"]): void => {
+    _options.initialYear = year;
+  };
+
+  const setMonthYear = (
+    month: DPOptions["initialMonth"],
+    year: DPOptions["initialYear"]
+  ): void => {
+    _options.initialMonth = month;
+    _options.initialYear = year;
+  };
+
   return {
     getMonthOfDate,
     getCurrentMonth,
     getCalendarMonth,
+    setMonth,
+    setYear,
+    setMonthYear,
   };
 }
