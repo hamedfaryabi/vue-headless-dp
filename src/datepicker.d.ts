@@ -29,6 +29,15 @@ export interface DPOptions {
    * @memberof DPOptions
    */
   initialYear?: number;
+
+  /**
+   * if true, show days of prev month in first week and days of next month in last week.
+   * if true, length of all weeks are 7
+   *
+   * @type {boolean}
+   * @memberof DPOptions
+   */
+  equalWeeks?: boolean;
 }
 
 export type DPMonthName = {
@@ -45,6 +54,7 @@ export interface DPDay {
   monthindex: number;
   today: boolean;
   weekName: DPDPDayInWeekName;
+  inMonth: boolean;
 }
 
 export interface DPWeek {

@@ -10,23 +10,30 @@ import {
   getYear,
   isToday,
   startOfMonth,
+  isThisMonth,
+  subDays,
+  addDays,
+  getDay,
 } from "date-fns";
 import { defu } from "defu";
 
 export function useHeadlessDatePicker(options?: DPOptions) {
   let _options: DPOptions = {
-    weekStart: 0,
+    weekStart: 1, // monday
     initialMonth: undefined,
     initialYear: undefined,
+    equalWeeks: true,
   };
 
   _options = defu(options, _options);
   const dateToDay = (date: Date): DPDay => {
+    const weekIndex = +format(date, "c", {
+      weekStartsOn: _options.weekStart,
+    });
+
     return {
-      date: date,
-      weekIndex: +format(date, "i", {
-        weekStartsOn: _options.weekStart,
-      }),
+      date,
+      weekIndex,
       monthindex: getDate(date),
       today: isToday(date),
       weekName: {
@@ -34,15 +41,12 @@ export function useHeadlessDatePicker(options?: DPOptions) {
           weekStartsOn: _options.weekStart,
         }),
       },
+      inMonth: isThisMonth(date),
     };
   };
 
-  const getMonthOfDate = (date: Date | number): DPMonth => {
-    const monthStart = startOfMonth(date),
-      monthEnd = endOfMonth(date);
-
-    const allDays = eachDayOfInterval({ start: monthStart, end: monthEnd });
-    const daysByWeeks = allDays.reduce((acc: DPDay[][], date) => {
+  const datesToWeeks = (dates: Date[]) => {
+    const daysByWeeks = dates.reduce((acc: DPDay[][], date) => {
       const weekNumber = getWeekOfMonth(date, {
         weekStartsOn: _options.weekStart,
       });
@@ -54,12 +58,41 @@ export function useHeadlessDatePicker(options?: DPOptions) {
       return acc;
     }, []);
 
-    const weeks: DPWeek[] = daysByWeeks.map((days) => ({
+    return daysByWeeks.map((days) => ({
       days: days,
       number: getWeekOfMonth(days[0].date, {
         weekStartsOn: _options.weekStart,
       }),
     }));
+  };
+
+  const getMonthOfDate = (date: Date | number): DPMonth => {
+    const monthStart = startOfMonth(date),
+      monthEnd = endOfMonth(date);
+
+    const allDays = eachDayOfInterval({ start: monthStart, end: monthEnd });
+    const weeks: DPWeek[] = datesToWeeks(allDays);
+    if (_options.equalWeeks) {
+      if (weeks[0].days.length < 7) {
+        const diff = 7 - weeks[0].days.length;
+        const startDate = weeks[0].days[0].date;
+
+        for (let index = 1; index <= diff; index++) {
+          weeks[0].days.unshift(dateToDay(subDays(startDate, index)));
+        }
+      }
+
+      const weeksLastIndex = weeks.length - 1;
+      if (weeks[weeksLastIndex].days.length < 7) {
+        const daysLength = weeks[weeksLastIndex].days.length;
+        const diff = 7 - daysLength;
+        const startDate = weeks[weeksLastIndex].days[daysLength - 1].date;
+
+        for (let index = 1; index <= diff; index++) {
+          weeks[weeksLastIndex].days.push(dateToDay(addDays(startDate, index)));
+        }
+      }
+    }
 
     const sampleDate = allDays[0];
     const month: DPMonth = {
