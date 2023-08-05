@@ -14,8 +14,10 @@ import {
 import { defu } from "defu";
 
 export function useHeadlessDatePicker(options?: DPOptions) {
-  let _options: Required<DPOptions> = {
+  let _options: DPOptions = {
     weekStart: 0,
+    initialMonth: undefined,
+    initialYear: undefined,
   };
 
   _options = defu(options, _options);
@@ -67,7 +69,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
           weekStartsOn: _options.weekStart,
         }),
       },
-      number: getMonth(sampleDate),
+      number: getMonth(sampleDate) + 1,
       year: getYear(sampleDate),
     };
 
@@ -78,8 +80,21 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     return getMonthOfDate(new Date());
   };
 
+  const getCalendarMonth = (): DPMonth => {
+    const d = new Date();
+    if (_options.initialYear) {
+      d.setFullYear(_options.initialYear);
+    }
+    if (_options.initialMonth) {
+      d.setMonth(_options.initialMonth - 1);
+    }
+
+    return getMonthOfDate(d);
+  };
+
   return {
     getMonthOfDate,
     getCurrentMonth,
+    getCalendarMonth,
   };
 }

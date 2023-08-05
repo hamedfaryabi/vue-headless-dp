@@ -8,6 +8,27 @@ export interface DPOptions {
    * @memberof DPOptions
    */
   weekStart?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
+  /**
+   * Value to initialize the month of datepicker.
+   * If a value is provided, it displays the selected month starting from this year.
+   * If no value is selected, it returns the current month.
+   *
+   * @type {(1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12)}
+   * @memberof DPOptions
+   */
+  initialMonth?: number;
+
+  /**
+   * Value to initialize the year of datepicker.
+   * If a value is provided, it displays the selected year.
+   * If no value is selected, it returns the current year.
+   *
+   *
+   * @type {number}
+   * @memberof DPOptions
+   */
+  initialYear?: number;
 }
 
 export type DPMonthName = {
