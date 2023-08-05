@@ -15,18 +15,18 @@ import { defu } from "defu";
 
 export function useHeadlessDatePicker(options?: DPOptions) {
   let _options: DPOptions = {
-    weekStart: 0,
+    weekStart: 1, // monday
     initialMonth: undefined,
     initialYear: undefined,
   };
 
   _options = defu(options, _options);
   const dateToDay = (date: Date): DPDay => {
+    const weekIndex = +format(date, "c", {
+      weekStartsOn: _options.weekStart,
+    });
     return {
-      date: date,
-      weekIndex: +format(date, "i", {
-        weekStartsOn: _options.weekStart,
-      }),
+      weekIndex,
       monthindex: getDate(date),
       today: isToday(date),
       weekName: {
