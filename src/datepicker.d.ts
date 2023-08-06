@@ -1,4 +1,4 @@
-export interface DPOptions {
+export interface DPBaseOptions {
   /**
    * Defines start of the week.
    *
@@ -39,8 +39,37 @@ export interface DPOptions {
    */
   equalWeeks?: boolean;
 
+  /**
+   * Defines selection type
+   * single: can select only one date
+   * multiple: can select array of dates
+   * range: set start and end of selected range
+   *
+   * @type {("single" | "multiple" | "range")}
+   * @memberof DPBaseOptions
+   */
+  selectType?: "single" | "multiple" | "range";
+}
+
+export interface DPSingleSelectOptions extends DPBaseOptions {
+  selectType?: "single";
   selected?: Date;
 }
+
+export interface DPMultiSelectOptions extends DPBaseOptions {
+  selectType?: "multiple";
+  selected?: Date[];
+}
+
+export interface DPRangeSelectOptions extends DPBaseOptions {
+  selectType?: "range";
+  selected?: { from: Date; to: Date };
+}
+
+export type DPOptions =
+  | DPSingleSelectOptions
+  | DPMultiSelectOptions
+  | DPRangeSelectOptions;
 
 export type DPMonthName = {
   fullName: string;

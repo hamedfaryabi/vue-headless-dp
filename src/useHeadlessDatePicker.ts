@@ -13,8 +13,10 @@ import {
   isThisMonth,
   subDays,
   addDays,
-  isEqual,
-  set,
+  isSameDay,
+  startOfDay,
+  endOfDay,
+  isWithinInterval,
 } from "date-fns";
 import { defu } from "defu";
 
@@ -25,26 +27,36 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     initialYear: undefined,
     equalWeeks: true,
     selected: undefined,
+    selectType: "single",
   };
 
-  _options = defu(options, _options);
+  _options = defu(options, _options) as DPOptions;
 
-  const zeroTime = (date: Date): Date => {
-    return set(date, {
-      hours: 0,
-      minutes: 0,
-      seconds: 0,
-      milliseconds: 0,
-    });
+  const isDateSelected = (date: Date): boolean => {
+    if (_options.selected) {
+      switch (_options.selectType) {
+        case "single":
+          return isSameDay(date, _options.selected);
+        case "multiple":
+          return _options.selected.some((d) => isSameDay(date, d));
+        case "range":
+          const interval = {
+            start: startOfDay(_options.selected.from),
+            end: endOfDay(_options.selected.to),
+          };
+          return isWithinInterval(date, interval);
+        default:
+          return false;
+      }
+    } else {
+      return false;
+    }
   };
 
   const dateToDay = (date: Date): DPDay => {
     const weekIndex = +format(date, "c", {
       weekStartsOn: _options.weekStart,
     });
-
-    const isSelected =
-      _options.selected && isEqual(zeroTime(date), zeroTime(_options.selected));
 
     return {
       date,
@@ -57,7 +69,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
         }),
       },
       inMonth: isThisMonth(date),
-      selected: isSelected || false,
+      selected: isDateSelected(date),
     };
   };
 
@@ -157,12 +169,41 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     _options.initialYear = year;
   };
 
-  const setSelected = (date: Date) => {
-    _options.selected = zeroTime(date);
+  const setSelected = (date: DPOptions["selected"]) => {
+    if (date) {
+      switch (_options.selectType) {
+        case "single":
+          if (!(date instanceof Date)) {
+            throw new Error("Invalid date format for 'single' selectType");
+          }
+          _options.selected = date;
+          break;
+        case "multiple":
+          if (!Array.isArray(date) || !date.every((d) => d instanceof Date)) {
+            throw new Error("Invalid date format for 'multiple' selectType");
+          }
+          _options.selected = date;
+          break;
+        case "range":
+          if (
+            !("from" in date) ||
+            !("to" in date) ||
+            !(date.from instanceof Date) ||
+            !(date.to instanceof Date)
+          ) {
+            throw new Error("Invalid date format for 'range' selectType");
+          }
+          _options.selected = date;
+          break;
+        default:
+          throw new Error(`invalid selectType: ${_options.selectType}`);
+          break;
+      }
+    }
   };
 
-  const getSelected = (): Date | null => {
-    return _options.selected || null;
+  const getSelected = (): DPOptions["selected"] => {
+    return _options.selected;
   };
 
   return {
@@ -174,5 +215,6 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     setMonthYear,
     setSelected,
     getSelected,
+    isDateSelected,
   };
 }
