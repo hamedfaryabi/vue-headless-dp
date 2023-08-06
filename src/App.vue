@@ -4,6 +4,7 @@ import { useHeadlessDatePicker } from ".";
 const dp = useHeadlessDatePicker({
   weekStart: 6,
   selectType: "range",
+  equalWeeks: false,
 });
 
 const to = new Date();

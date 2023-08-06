@@ -1,84 +1,92 @@
+/**
+ * Base options for configuring the behavior of the datepicker.
+ */
 export interface DPBaseOptions {
   /**
-   * Defines start of the week.
-   *
-   * **0 is sunday**
-   *
-   * @type {(0 | 1 | 2 | 3 | 4 | 5 | 6)}
-   * @memberof DPOptions
+   * Defines the start of the week.
+   * 0 corresponds to Sunday, 1 to Monday, and so on.
    */
   weekStart?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
   /**
-   * Value to initialize the month of datepicker.
-   * If a value is provided, it displays the selected month starting from this year.
-   * If no value is selected, it returns the current month.
-   *
-   * @type {(1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12)}
-   * @memberof DPOptions
+   * Value to initialize the month of the datepicker.
+   * If provided, displays the selected month starting from this year.
+   * If not provided, displays the current month.
    */
   initialMonth?: number;
 
   /**
-   * Value to initialize the year of datepicker.
-   * If a value is provided, it displays the selected year.
-   * If no value is selected, it returns the current year.
-   *
-   *
-   * @type {number}
-   * @memberof DPOptions
+   * Value to initialize the year of the datepicker.
+   * If provided, displays the selected year.
+   * If not provided, displays the current year.
    */
   initialYear?: number;
 
   /**
-   * if true, show days of prev month in first week and days of next month in last week.
-   * if true, length of all weeks are 7
-   *
-   * @type {boolean}
-   * @memberof DPOptions
+   * If true, show days of the previous month in the first week and
+   * days of the next month in the last week.
+   * If true, the length of all weeks is fixed to 7 days.
    */
   equalWeeks?: boolean;
 
   /**
-   * Defines selection type
-   * single: can select only one date
-   * multiple: can select array of dates
-   * range: set start and end of selected range
-   *
-   * @type {("single" | "multiple" | "range")}
-   * @memberof DPBaseOptions
+   * Defines the selection type for the datepicker.
+   * - "single": Can select only one date.
+   * - "multiple": Can select an array of dates.
+   * - "range": Can select a range with a start and end date.
    */
   selectType?: "single" | "multiple" | "range";
 }
 
+/**
+ * Options for single-date selection mode.
+ */
 export interface DPSingleSelectOptions extends DPBaseOptions {
   selectType?: "single";
   selected?: Date;
 }
 
+/**
+ * Options for multi-date selection mode.
+ */
 export interface DPMultiSelectOptions extends DPBaseOptions {
   selectType?: "multiple";
   selected?: Date[];
 }
 
+/**
+ * Options for range-date selection mode.
+ */
 export interface DPRangeSelectOptions extends DPBaseOptions {
   selectType?: "range";
   selected?: { from: Date; to: Date };
 }
 
+/**
+ * A union of all possible options configurations.
+ */
 export type DPOptions =
   | DPSingleSelectOptions
   | DPMultiSelectOptions
   | DPRangeSelectOptions;
 
+/**
+ * Represents the full name of a month.
+ */
 export type DPMonthName = {
   fullName: string;
 };
 
+/**
+ * Represents the full name of a day in a week.
+ */
 export type DPDPDayInWeekName = {
   fullName: string;
 };
 
+/**
+ * Represents a day in the datepicker.
+ */
 export interface DPDay {
   date: Date;
   weekIndex: number;
@@ -89,11 +97,17 @@ export interface DPDay {
   selected: boolean;
 }
 
+/**
+ * Represents a week in the datepicker.
+ */
 export interface DPWeek {
   days: DPDay[];
   number: number;
 }
 
+/**
+ * Represents a month in the datepicker.
+ */
 export interface DPMonth {
   name: DPMonthName;
   number: number;
