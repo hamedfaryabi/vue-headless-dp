@@ -16,6 +16,7 @@ import {
   startOfDay,
   startOfMonth,
   subDays,
+  isValid,
 } from "date-fns";
 import { defu } from "defu";
 
@@ -38,11 +39,23 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     equalWeeks: true,
     selected: undefined,
     selectType: "single",
+    disabled: [],
   };
 
   // Merge provided options with default options
   const _options: DPOptions = defu(options, defaultOptions) as DPOptions;
 
+  /**
+   * Checks if a given date is valid.
+   *
+   * @param {Date} date - The date to be checked for validity.
+   * @throws {Error} Throws an error if the provided date is invalid.
+   * @returns {boolean} Returns true if the date is valid, otherwise throws an error.
+   */
+  const checkDate = (date: Date): boolean => {
+    if (isValid(date)) return true;
+    else throw new Error("The provided date is invalid");
+  };
   /**
    * Checks if a date is selected based on the selectType configuration.
    *
@@ -50,7 +63,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
    * @returns {boolean} - `true` if the date is selected, otherwise `false`.
    */
   const isDateSelected = (date: Date): boolean => {
-    if (!_options.selected) return false;
+    if (!_options.selected || !checkDate(date)) return false;
 
     switch (_options.selectType) {
       case "single":
@@ -71,7 +84,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
    * @returns {boolean} - `true` if the date is within the selected range, otherwise `false`.
    */
   const isWithinRange = (date: Date): boolean => {
-    if (!_options.selected) return false;
+    if (!_options.selected || !checkDate(date)) return false;
 
     const selected = _options.selected as { from: Date; to: Date };
     const interval = {
@@ -89,6 +102,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
    * @returns {DPDay} - The DPDay object representing the given date.
    */
   const dateToDay = (date: Date): DPDay => {
+    checkDate(date);
     const weekIndex = +format(date, "c", {
       weekStartsOn: _options.weekStart,
     });
@@ -105,6 +119,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
       },
       inMonth: isThisMonth(date),
       selected: isDateSelected(date),
+      disabled: _options.disabled?.some((d) => isSameDay(d, date)) || false,
     };
   };
 
@@ -115,6 +130,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
    * @returns {DPWeek[]} - An array of DPWeek objects representing the weeks.
    */
   const datesToWeeks = (dates: Date[]): DPWeek[] => {
+    dates.every((date) => checkDate(date));
     const daysByWeeks = dates.reduce((acc: DPDay[][], date) => {
       const weekNumber = getWeekOfMonth(date, {
         weekStartsOn: _options.weekStart,
@@ -141,7 +157,8 @@ export function useHeadlessDatePicker(options?: DPOptions) {
    * @param {Date | number} date - The date or number to represent the month.
    * @returns {DPMonth} - The DPMonth object representing the month.
    */
-  const getMonthOfDate = (date: Date | number): DPMonth => {
+  const getMonthOfDate = (date: Date): DPMonth => {
+    checkDate(date);
     const monthStart = startOfMonth(date),
       monthEnd = endOfMonth(date);
 
@@ -286,12 +303,29 @@ export function useHeadlessDatePicker(options?: DPOptions) {
   };
 
   /**
-   * Gets the selected date.
+   * Gets the selected date or dates.
    *
    * @returns {DPOptions["selected"]} - The selected date value.
    */
   const getSelected = (): DPOptions["selected"] => {
     return _options.selected;
+  };
+
+  /**
+   * Set disabled days in the datepicker
+   *
+   * @param {(Date | Date[])} date - A single date or an array of dates to be disabled.
+   * @throws {Error} Throws an error if the input date format is invalid.
+   * @memberof useHeadlessDatePicker
+   */
+  const setDisabled = (date: Date | Date[]) => {
+    if (!Array.isArray(date)) {
+      date = [date];
+    }
+
+    if (date.every((d) => checkDate(d))) {
+      _options.disabled = [...(_options.disabled || []), ...date];
+    }
   };
 
   // Return all functions as an object
@@ -305,5 +339,6 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     setSelected,
     getSelected,
     isDateSelected,
+    setDisabled,
   };
 }

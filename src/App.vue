@@ -3,16 +3,12 @@ import { useHeadlessDatePicker } from ".";
 
 const dp = useHeadlessDatePicker({
   weekStart: 6,
-  selectType: "range",
+  selectType: "single",
   equalWeeks: false,
 });
 
-const to = new Date();
-to.setFullYear(2023, 11);
-dp.setSelected({
-  from: new Date(),
-  to,
-});
+dp.setDisabled(new Date());
+
 console.log(dp.getCalendarMonth());
 </script>
 

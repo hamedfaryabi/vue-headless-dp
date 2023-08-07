@@ -36,6 +36,11 @@ export interface DPBaseOptions {
    * - "range": Can select a range with a start and end date.
    */
   selectType?: "single" | "multiple" | "range";
+
+  /**
+   * To specify the disabled days of the calendar.
+   */
+  disabled?: Date[];
 }
 
 /**
@@ -95,6 +100,7 @@ export interface DPDay {
   weekName: DPDPDayInWeekName;
   inMonth: boolean;
   selected: boolean;
+  disabled: boolean;
 }
 
 /**
