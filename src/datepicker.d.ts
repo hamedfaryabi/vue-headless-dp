@@ -42,7 +42,14 @@ export interface DPBaseOptions {
    */
   disabled?: Date[];
 
+  /**
+   * To specify minimum valid date of the datepicker
+   */
   minDate?: Date;
+
+  /**
+   * To specify maximum valid date of the datepicker
+   */
   maxDate?: Date;
 }
 

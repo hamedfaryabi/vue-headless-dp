@@ -359,11 +359,21 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     }
   };
 
+  /**
+   * Set the minimum valid date of datepicker
+   *
+   * @param {Date} date
+   */
   const setMinDate = (date: Date) => {
     checkDate(date);
     _options.minDate = date;
   };
 
+  /**
+   * Set the maximum valid date of datepicker
+   *
+   * @param {Date} date
+   */
   const setMaxDate = (date: Date) => {
     checkDate(date);
     _options.maxDate = date;
