@@ -142,7 +142,13 @@ export function useHeadlessDatePicker(options?: DPOptions) {
       monthindex: getDate(date),
       today: isToday(date),
       weekName: {
-        fullName: format(date, "EEEE", {
+        full: format(date, "EEEE", {
+          weekStartsOn: _options.weekStart,
+        }),
+        short: format(date, "E..EEE", {
+          weekStartsOn: _options.weekStart,
+        }),
+        letter: format(date, "EEEEE", {
           weekStartsOn: _options.weekStart,
         }),
       },
@@ -223,7 +229,13 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     const month: DPMonth = {
       weeks: weeks,
       name: {
-        fullName: format(sampleDate, "MMMM", {
+        full: format(sampleDate, "MMMM", {
+          weekStartsOn: _options.weekStart,
+        }),
+        short: format(sampleDate, "MMM", {
+          weekStartsOn: _options.weekStart,
+        }),
+        letter: format(sampleDate, "MMMMM", {
           weekStartsOn: _options.weekStart,
         }),
       },

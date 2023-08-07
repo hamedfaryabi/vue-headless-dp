@@ -89,14 +89,18 @@ export type DPOptions =
  * Represents the full name of a month.
  */
 export type DPMonthName = {
-  fullName: string;
+  full: string;
+  short: string;
+  letter: string;
 };
 
 /**
  * Represents the full name of a day in a week.
  */
 export type DPDPDayInWeekName = {
-  fullName: string;
+  full: string;
+  short: string;
+  letter: string;
 };
 
 /**
