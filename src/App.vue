@@ -5,6 +5,7 @@ const dp = useHeadlessDatePicker({
   weekStart: 6,
   selectType: "single",
   equalWeeks: false,
+  minDate: new Date(),
 });
 
 dp.setDisabled(new Date());

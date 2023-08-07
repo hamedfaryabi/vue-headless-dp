@@ -17,6 +17,9 @@ import {
   startOfMonth,
   subDays,
   isValid,
+  isBefore,
+  set,
+  isAfter,
 } from "date-fns";
 import { defu } from "defu";
 
@@ -40,6 +43,8 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     selected: undefined,
     selectType: "single",
     disabled: [],
+    minDate: undefined,
+    maxDate: undefined,
   };
 
   // Merge provided options with default options
@@ -107,6 +112,30 @@ export function useHeadlessDatePicker(options?: DPOptions) {
       weekStartsOn: _options.weekStart,
     });
 
+    const isBelowMinDate = _options.minDate
+      ? isBefore(
+          set(date, { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 }),
+          set(_options.minDate, {
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+            milliseconds: 0,
+          })
+        )
+      : false;
+
+    const isAboveMaxDate = _options.maxDate
+      ? isAfter(
+          set(date, { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 }),
+          set(_options.maxDate, {
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+            milliseconds: 0,
+          })
+        )
+      : false;
+
     return {
       date,
       weekIndex,
@@ -120,6 +149,8 @@ export function useHeadlessDatePicker(options?: DPOptions) {
       inMonth: isThisMonth(date),
       selected: isDateSelected(date),
       disabled: _options.disabled?.some((d) => isSameDay(d, date)) || false,
+      belowMin: isBelowMinDate,
+      aboveMax: isAboveMaxDate,
     };
   };
 
@@ -328,6 +359,16 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     }
   };
 
+  const setMinDate = (date: Date) => {
+    checkDate(date);
+    _options.minDate = date;
+  };
+
+  const setMaxDate = (date: Date) => {
+    checkDate(date);
+    _options.maxDate = date;
+  };
+
   // Return all functions as an object
   return {
     getMonthOfDate,
@@ -340,5 +381,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     getSelected,
     isDateSelected,
     setDisabled,
+    setMinDate,
+    setMaxDate,
   };
 }

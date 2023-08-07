@@ -41,6 +41,9 @@ export interface DPBaseOptions {
    * To specify the disabled days of the calendar.
    */
   disabled?: Date[];
+
+  minDate?: Date;
+  maxDate?: Date;
 }
 
 /**
@@ -101,6 +104,8 @@ export interface DPDay {
   inMonth: boolean;
   selected: boolean;
   disabled: boolean;
+  belowMin: boolean;
+  aboveMax: boolean;
 }
 
 /**
