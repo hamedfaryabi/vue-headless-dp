@@ -113,27 +113,11 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     });
 
     const isBelowMinDate = _options.minDate
-      ? isBefore(
-          set(date, { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 }),
-          set(_options.minDate, {
-            hours: 0,
-            minutes: 0,
-            seconds: 0,
-            milliseconds: 0,
-          })
-        )
+      ? isBefore(startOfDay(date), startOfDay(_options.minDate))
       : false;
 
     const isAboveMaxDate = _options.maxDate
-      ? isAfter(
-          set(date, { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 }),
-          set(_options.maxDate, {
-            hours: 0,
-            minutes: 0,
-            seconds: 0,
-            milliseconds: 0,
-          })
-        )
+      ? isAfter(startOfDay(date), startOfDay(_options.maxDate))
       : false;
 
     return {
