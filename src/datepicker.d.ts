@@ -37,6 +37,9 @@ export interface DPBaseOptions {
    */
   selectType?: "single" | "multiple" | "range";
 
+  /**
+   * To specify the disabled days of the calendar.
+   */
   disabled?: Date[];
 }
 

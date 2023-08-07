@@ -45,7 +45,14 @@ export function useHeadlessDatePicker(options?: DPOptions) {
   // Merge provided options with default options
   const _options: DPOptions = defu(options, defaultOptions) as DPOptions;
 
-  const checkDate = (date: Date) => {
+  /**
+   * Checks if a given date is valid.
+   *
+   * @param {Date} date - The date to be checked for validity.
+   * @throws {Error} Throws an error if the provided date is invalid.
+   * @returns {boolean} Returns true if the date is valid, otherwise throws an error.
+   */
+  const checkDate = (date: Date): boolean => {
     if (isValid(date)) return true;
     else throw new Error("The provided date is invalid");
   };
@@ -304,13 +311,20 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     return _options.selected;
   };
 
+  /**
+   * Set disabled days in the datepicker
+   *
+   * @param {(Date | Date[])} date - A single date or an array of dates to be disabled.
+   * @throws {Error} Throws an error if the input date format is invalid.
+   * @memberof useHeadlessDatePicker
+   */
   const setDisabled = (date: Date | Date[]) => {
-    if (Array.isArray(date)) {
-      date.every((d) => checkDate(d));
+    if (!Array.isArray(date)) {
+      date = [date];
+    }
+
+    if (date.every((d) => checkDate(d))) {
       _options.disabled = [...(_options.disabled || []), ...date];
-    } else {
-      checkDate(date);
-      _options.disabled = [...(_options.disabled || []), date];
     }
   };
 
