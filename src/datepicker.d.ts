@@ -1,3 +1,5 @@
+import { Locale } from "date-fns";
+
 /**
  * Base options for configuring the behavior of the datepicker.
  */
@@ -51,6 +53,8 @@ export interface DPBaseOptions {
    * To specify maximum valid date of the datepicker
    */
   maxDate?: Date;
+
+  locale?: Locale;
 }
 
 /**
@@ -89,14 +93,19 @@ export type DPOptions =
  * Represents the full name of a month.
  */
 export type DPMonthName = {
-  fullName: string;
+  narrow: string;
+  abbreviated: string;
+  wide: string;
 };
 
 /**
  * Represents the full name of a day in a week.
  */
-export type DPDPDayInWeekName = {
-  fullName: string;
+export type DPDayInWeekName = {
+  narrow: string;
+  short: string;
+  abbreviated: string;
+  wide: string;
 };
 
 /**
@@ -107,7 +116,7 @@ export interface DPDay {
   weekIndex: number;
   monthindex: number;
   today: boolean;
-  weekName: DPDPDayInWeekName;
+  weekName: DPDayInWeekName;
   inMonth: boolean;
   selected: boolean;
   disabled: boolean;
