@@ -18,8 +18,9 @@ import {
   subDays,
   isValid,
   isBefore,
-  set,
   isAfter,
+  setDefaultOptions,
+  Locale,
 } from "date-fns";
 import { defu } from "defu";
 
@@ -45,11 +46,16 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     disabled: [],
     minDate: undefined,
     maxDate: undefined,
+    locale: undefined,
   };
 
   // Merge provided options with default options
   const _options: DPOptions = defu(options, defaultOptions) as DPOptions;
 
+  setDefaultOptions({
+    ...(_options.locale && { locale: _options.locale }),
+    weekStartsOn: _options.weekStart || 1,
+  });
   /**
    * Checks if a given date is valid.
    *
@@ -108,9 +114,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
    */
   const dateToDay = (date: Date): DPDay => {
     checkDate(date);
-    const weekIndex = +format(date, "c", {
-      weekStartsOn: _options.weekStart,
-    });
+    const weekIndex = +format(date, "c");
 
     const isBelowMinDate = _options.minDate
       ? isBefore(startOfDay(date), startOfDay(_options.minDate))
@@ -126,15 +130,10 @@ export function useHeadlessDatePicker(options?: DPOptions) {
       monthindex: getDate(date),
       today: isToday(date),
       weekName: {
-        full: format(date, "EEEE", {
-          weekStartsOn: _options.weekStart,
-        }),
-        short: format(date, "E..EEE", {
-          weekStartsOn: _options.weekStart,
-        }),
-        letter: format(date, "EEEEE", {
-          weekStartsOn: _options.weekStart,
-        }),
+        narrow: format(date, "eeeee"),
+        short: format(date, "eeeeee"),
+        abbreviated: format(date, "eee"),
+        wide: format(date, "eeee"),
       },
       inMonth: isThisMonth(date),
       selected: isDateSelected(date),
@@ -153,9 +152,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
   const datesToWeeks = (dates: Date[]): DPWeek[] => {
     dates.every((date) => checkDate(date));
     const daysByWeeks = dates.reduce((acc: DPDay[][], date) => {
-      const weekNumber = getWeekOfMonth(date, {
-        weekStartsOn: _options.weekStart,
-      });
+      const weekNumber = getWeekOfMonth(date);
       const day: DPDay = dateToDay(date);
 
       if (!acc[weekNumber - 1]) acc[weekNumber - 1] = [];
@@ -166,9 +163,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
 
     return daysByWeeks.map((days) => ({
       days: days,
-      number: getWeekOfMonth(days[0].date, {
-        weekStartsOn: _options.weekStart,
-      }),
+      number: getWeekOfMonth(days[0].date),
     }));
   };
 
@@ -213,15 +208,9 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     const month: DPMonth = {
       weeks: weeks,
       name: {
-        full: format(sampleDate, "MMMM", {
-          weekStartsOn: _options.weekStart,
-        }),
-        short: format(sampleDate, "MMM", {
-          weekStartsOn: _options.weekStart,
-        }),
-        letter: format(sampleDate, "MMMMM", {
-          weekStartsOn: _options.weekStart,
-        }),
+        narrow: format(sampleDate, "MMMMM"),
+        abbreviated: format(sampleDate, "MMM"),
+        wide: format(sampleDate, "MMMM"),
       },
       number: getMonth(sampleDate) + 1,
       year: getYear(sampleDate),
@@ -375,6 +364,13 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     _options.maxDate = date;
   };
 
+  const setLocale = (locale: Locale) => {
+    setDefaultOptions({
+      locale: locale,
+      weekStartsOn: _options.weekStart || 1,
+    });
+  };
+
   // Return all functions as an object
   return {
     getMonthOfDate,
@@ -389,5 +385,6 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     setDisabled,
     setMinDate,
     setMaxDate,
+    setLocale,
   };
 }

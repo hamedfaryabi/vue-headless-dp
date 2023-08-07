@@ -1,16 +1,19 @@
 <script lang="ts" setup>
 import { useHeadlessDatePicker } from ".";
 
+import faIR from "date-fns/locale/fa-IR";
+
 const dp = useHeadlessDatePicker({
   weekStart: 6,
   selectType: "single",
   equalWeeks: false,
   minDate: new Date(),
+  // locale: faIR,
 });
 
 dp.setDisabled(new Date());
 
-console.log(dp.getCalendarMonth());
+console.log(dp.getCalendarMonth().weeks[1].days[3].weekName);
 </script>
 
 <template>
