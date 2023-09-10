@@ -2,15 +2,16 @@
 import { useHeadlessDatePicker } from ".";
 
 const dp = useHeadlessDatePicker({
+  calendar: "gregorian",
   weekStart: 6,
   selectType: "single",
   equalWeeks: false,
   minDate: new Date(),
 });
 
-dp.setDisabled(new Date());
+dp.setSelected(new Date());
 
-console.log(dp.getCalendarMonth().weeks[1].days[3].weekName);
+console.log(dp.getCurrentMonth());
 </script>
 
 <template>
