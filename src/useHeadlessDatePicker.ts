@@ -98,6 +98,23 @@ export function useHeadlessDatePicker(options?: DPOptions) {
   };
 
   /**
+   * Checks if a date is disabled.
+   *
+   * @param {Date} date - The date to check.
+   * @returns {boolean} - `true` if the date is selected, otherwise `false`.
+   */
+  const isDateDisabled = (date: Date): boolean => {
+    if (!_options.disabled || _options.disabled.length < 1 || !checkDate(date))
+      return false;
+
+    return (
+      _options.disabled.findIndex((d: Date) =>
+        dateLib.value.isSameDay(date, d)
+      ) > -1
+    );
+  };
+
+  /**
    * Checks if a date is within the range of a selected range.
    *
    * @param {Date} date - The date to check.
@@ -412,5 +429,6 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     setMinDate,
     setMaxDate,
     setLocale,
+    isDateDisabled,
   };
 }
