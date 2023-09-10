@@ -10,26 +10,28 @@
   "module": "./dist/vue-headless-datepicker.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-		"dev": "vite",
+    "dev": "vite",
     "build": "vue-tsc && vite build"
   },
   "peerDependencies": {
     "date-fns": "^2.30.0",
+    "date-fns-jalali": "2.30.0-0",
     "defu": "^6.1.2",
     "vue": "^3.3.0"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.22.9",
-    "@types/jest": "^29.5.3",
-    "@types/node": "^20.4.6",
-    "@vitejs/plugin-vue": "^4.2.3",
+    "@babel/preset-env": "^7.22.15",
+    "@types/jest": "^29.5.4",
+    "@types/node": "^20.6.0",
+    "@vitejs/plugin-vue": "^4.3.4",
     "@vue/test-utils": "^2.4.1",
-    "jest": "^29.6.2",
+    "date-fns-jalali": "2.30.0-0",
+    "jest": "^29.6.4",
     "ts-jest": "^29.1.1",
-    "typescript": "^5.0.2",
-    "vite": "^4.4.5",
-    "vite-plugin-dts": "^3.4.0",
+    "typescript": "^5.2.2",
+    "vite": "^4.4.9",
+    "vite-plugin-dts": "^3.5.3",
     "vue-jest": "^3.0.7",
-    "vue-tsc": "^1.8.5"
+    "vue-tsc": "^1.8.10"
   }
 }
