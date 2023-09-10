@@ -12,6 +12,10 @@ const dp = useHeadlessDatePicker({
 dp.setSelected(new Date());
 
 console.log(dp.getCurrentMonth());
+dp.options.calendar = "jalali";
+setTimeout(() => {
+  console.log(dp.getCurrentMonth());
+}, 3000);
 </script>
 
 <template>

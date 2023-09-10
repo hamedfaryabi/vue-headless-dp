@@ -3,6 +3,7 @@ import { defu } from "defu";
 
 import * as DateFns from "date-fns";
 import * as DateFnsJalali from "date-fns-jalali";
+import { reactive, ref, watchEffect } from "vue";
 
 /**
  * A hook for creating a headless date picker.
@@ -12,14 +13,14 @@ import * as DateFnsJalali from "date-fns-jalali";
  */
 export function useHeadlessDatePicker(options?: DPOptions) {
   // Define a variable for the date library
-  let dateLib: dateFns;
+  const dateLib = ref<dateFns>(DateFnsJalali);
 
   /**
    * Default options for the date picker.
    *
    * @type {DPOptions}
    */
-  const defaultOptions: DPOptions = {
+  const optionsRef: DPOptions = reactive<DPOptions>({
     calendar: "jalali",
     weekStart: 1, // Monday
     initialMonth: undefined,
@@ -31,21 +32,36 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     minDate: undefined,
     maxDate: undefined,
     locale: undefined,
-  };
+  });
 
   // Merge provided options with default options
-  const _options: DPOptions = defu(options, defaultOptions) as DPOptions;
+  const _options = reactive<DPOptions>(defu(options, optionsRef) as DPOptions);
 
+  // Watch for changes in the calendar option and set the appropriate date library
+  watchEffect(() => {
+    console.log(_options.calendar);
+
+    if (_options.calendar === "jalali") {
+      dateLib.value = DateFnsJalali;
+    } else {
+      dateLib.value = DateFns;
+    }
+
+    dateLib.value.setDefaultOptions({
+      ...(_options.locale && { locale: _options.locale }),
+      weekStartsOn: _options.weekStart || 6,
+    });
+  });
   // Conditionally import the date library based on the calendar option
   if (_options && _options.calendar === "jalali") {
     // Import the "date-fns-jalali" library
-    dateLib = DateFnsJalali;
+    dateLib.value = DateFnsJalali;
   } else {
     // Import the "date-fns" library (default)
-    dateLib = DateFns;
+    dateLib.value = DateFns;
   }
 
-  dateLib.setDefaultOptions({
+  dateLib.value.setDefaultOptions({
     ...(_options.locale && { locale: _options.locale }),
     weekStartsOn: _options.weekStart || 1,
   });
@@ -57,7 +73,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
    * @returns {boolean} Returns true if the date is valid, otherwise throws an error.
    */
   const checkDate = (date: Date): boolean => {
-    if (dateLib.isValid(date)) return true;
+    if (dateLib.value.isValid(date)) return true;
     else throw new Error("The provided date is invalid");
   };
   /**
@@ -71,9 +87,9 @@ export function useHeadlessDatePicker(options?: DPOptions) {
 
     switch (_options.selectType) {
       case "single":
-        return dateLib.isSameDay(date, _options.selected);
+        return dateLib.value.isSameDay(date, _options.selected);
       case "multiple":
-        return _options.selected.some((d) => dateLib.isSameDay(date, d));
+        return _options.selected.some((d) => dateLib.value.isSameDay(date, d));
       case "range":
         return isWithinRange(date);
       default:
@@ -92,11 +108,11 @@ export function useHeadlessDatePicker(options?: DPOptions) {
 
     const selected = _options.selected as { from: Date; to: Date };
     const interval = {
-      start: dateLib.startOfDay(selected.from),
-      end: dateLib.endOfDay(selected.to),
+      start: dateLib.value.startOfDay(selected.from),
+      end: dateLib.value.endOfDay(selected.to),
     };
 
-    return dateLib.isWithinInterval(date, interval);
+    return dateLib.value.isWithinInterval(date, interval);
   };
 
   /**
@@ -107,37 +123,38 @@ export function useHeadlessDatePicker(options?: DPOptions) {
    */
   const dateToDay = (date: Date): DPDay => {
     checkDate(date);
-    const weekIndex = +dateLib.format(date, "c");
+    const weekIndex = +dateLib.value.format(date, "c");
 
     const isBelowMinDate = _options.minDate
-      ? dateLib.isBefore(
-          dateLib.startOfDay(date),
-          dateLib.startOfDay(_options.minDate)
+      ? dateLib.value.isBefore(
+          dateLib.value.startOfDay(date),
+          dateLib.value.startOfDay(_options.minDate)
         )
       : false;
 
     const isAboveMaxDate = _options.maxDate
-      ? dateLib.isAfter(
-          dateLib.startOfDay(date),
-          dateLib.startOfDay(_options.maxDate)
+      ? dateLib.value.isAfter(
+          dateLib.value.startOfDay(date),
+          dateLib.value.startOfDay(_options.maxDate)
         )
       : false;
 
     return {
       date,
       weekIndex,
-      monthindex: dateLib.getDate(date),
-      today: dateLib.isToday(date),
+      monthindex: dateLib.value.getDate(date),
+      today: dateLib.value.isToday(date),
       weekName: {
-        narrow: dateLib.format(date, "eeeee"),
-        short: dateLib.format(date, "eeeeee"),
-        abbreviated: dateLib.format(date, "eee"),
-        wide: dateLib.format(date, "eeee"),
+        narrow: dateLib.value.format(date, "eeeee"),
+        short: dateLib.value.format(date, "eeeeee"),
+        abbreviated: dateLib.value.format(date, "eee"),
+        wide: dateLib.value.format(date, "eeee"),
       },
-      inMonth: dateLib.isThisMonth(date),
+      inMonth: dateLib.value.isThisMonth(date),
       selected: isDateSelected(date),
       disabled:
-        _options.disabled?.some((d) => dateLib.isSameDay(d, date)) || false,
+        _options.disabled?.some((d) => dateLib.value.isSameDay(d, date)) ||
+        false,
       belowMin: isBelowMinDate,
       aboveMax: isAboveMaxDate,
     };
@@ -152,7 +169,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
   const datesToWeeks = (dates: Date[]): DPWeek[] => {
     dates.every((date) => checkDate(date));
     const daysByWeeks = dates.reduce((acc: DPDay[][], date) => {
-      const weekNumber = dateLib.getWeekOfMonth(date);
+      const weekNumber = dateLib.value.getWeekOfMonth(date);
       const day: DPDay = dateToDay(date);
 
       if (!acc[weekNumber - 1]) acc[weekNumber - 1] = [];
@@ -163,7 +180,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
 
     return daysByWeeks.map((days) => ({
       days: days,
-      number: dateLib.getWeekOfMonth(days[0].date),
+      number: dateLib.value.getWeekOfMonth(days[0].date),
     }));
   };
 
@@ -175,10 +192,10 @@ export function useHeadlessDatePicker(options?: DPOptions) {
    */
   const getMonthOfDate = (date: Date): DPMonth => {
     checkDate(date);
-    const monthStart = dateLib.startOfMonth(date),
-      monthEnd = dateLib.endOfMonth(date);
+    const monthStart = dateLib.value.startOfMonth(date),
+      monthEnd = dateLib.value.endOfMonth(date);
 
-    const allDays = dateLib.eachDayOfInterval({
+    const allDays = dateLib.value.eachDayOfInterval({
       start: monthStart,
       end: monthEnd,
     });
@@ -191,7 +208,9 @@ export function useHeadlessDatePicker(options?: DPOptions) {
         const startDate = weeks[0].days[0].date;
 
         for (let index = 1; index <= diff; index++) {
-          weeks[0].days.unshift(dateToDay(dateLib.subDays(startDate, index)));
+          weeks[0].days.unshift(
+            dateToDay(dateLib.value.subDays(startDate, index))
+          );
         }
       }
 
@@ -203,7 +222,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
 
         for (let index = 1; index <= diff; index++) {
           weeks[weeksLastIndex].days.push(
-            dateToDay(dateLib.addDays(startDate, index))
+            dateToDay(dateLib.value.addDays(startDate, index))
           );
         }
       }
@@ -213,12 +232,12 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     const month: DPMonth = {
       weeks: weeks,
       name: {
-        narrow: dateLib.format(sampleDate, "MMMMM"),
-        abbreviated: dateLib.format(sampleDate, "MMM"),
-        wide: dateLib.format(sampleDate, "MMMM"),
+        narrow: dateLib.value.format(sampleDate, "MMMMM"),
+        abbreviated: dateLib.value.format(sampleDate, "MMM"),
+        wide: dateLib.value.format(sampleDate, "MMMM"),
       },
-      number: dateLib.getMonth(sampleDate) + 1,
-      year: dateLib.getYear(sampleDate),
+      number: dateLib.value.getMonth(sampleDate) + 1,
+      year: dateLib.value.getYear(sampleDate),
     };
 
     return month;
@@ -370,7 +389,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
   };
 
   const setLocale = (locale: Locale) => {
-    dateLib.setDefaultOptions({
+    dateLib.value.setDefaultOptions({
       locale: locale,
       weekStartsOn: _options.weekStart || 1,
     });
@@ -378,6 +397,8 @@ export function useHeadlessDatePicker(options?: DPOptions) {
 
   // Return all functions as an object
   return {
+    dateLib,
+    options: _options,
     getMonthOfDate,
     getCurrentMonth,
     getCalendarMonth,
