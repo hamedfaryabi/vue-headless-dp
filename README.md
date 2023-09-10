@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The Vue.js Headless Date Picker Composable is a utility for managing date-related functionality in Vue.js applications. It provides a set of functions and options to work with dates, calendars, and date selections.
+The Vue.js Headless Date Picker Composable is a utility that provides date-related functionality for Vue.js applications. It offers a set of functions and options to manage dates, calendars, and date selections.
 
 ## Installation
 
@@ -22,7 +22,7 @@ yarn add vue-headless-date-picker
 import { useHeadlessDatePicker } from 'vue-headless-date-picker';
 ```
 
-### Creating a Headless Date Picker
+### Creating a Headless Date Picker Instance
 
 ```javascript
 const datePicker = useHeadlessDatePicker();
@@ -32,66 +32,66 @@ const datePicker = useHeadlessDatePicker();
 
 The composable supports the following configuration options:
 
-- `calendar` (default: "jalali" | "gregorian"): Type of calendar to use ("jalali" or "gregorian").
-- `weekStart` (default: 1): Start of the week (0 for Sunday, 1 for Monday, etc.).
-- `initialMonth`: Initial month to display.
-- `initialYear`: Initial year to display.
-- `equalWeeks` (default: true): Whether to show days from the previous and next months to create equal-length weeks.
-- `selectType` (default: "single" | "multiple" | "range"): Selection mode ("single", "multiple", or "range").
-- `selected`: Selected date(s) based on the selection mode.
+- `calendar` (default: "jalali" | "gregorian"): Specifies the type of calendar to be used ("jalali" or "gregorian").
+- `weekStart` (default: 1): Determines the start day of the week (0 for Sunday, 1 for Monday, etc.).
+- `initialMonth`: Sets the initial month to be displayed.
+- `initialYear`: Sets the initial year to be displayed.
+- `equalWeeks` (default: true): Controls whether days from previous and next months are shown to create equal-length weeks.
+- `selectType` (default: "single" | "multiple" | "range"): Defines the selection mode ("single", "multiple", or "range").
+- `selected`: Represents selected date(s) based on the selection mode.
 - `disabled`: An array of disabled dates.
-- `minDate`: Minimum valid date.
-- `maxDate`: Maximum valid date.
-- `locale`: Locale settings for date formatting.
+- `minDate`: Specifies the minimum valid date.
+- `maxDate`: Specifies the maximum valid date.
+- `locale`: Configures locale settings for date formatting.
 
 ### Functions
 
-The composable provides the following functions:
+The composable provides several functions:
 
-- `getMonthOfDate(date: Date): DPMonth`: Get the month for a given date.
-- `getCurrentMonth(): DPMonth`: Get the current month.
-- `getCalendarMonth(): DPMonth`: Get the month based on configuration options.
-- `setMonth(month: number): void`: Set the initial month.
-- `setYear(year: number): void`: Set the initial year.
-- `setMonthYear(month: number, year: number): void`: Set both initial month and year.
-- `setSelected(date: Date | Date[] | { from: Date; to: Date }): void`: Set the selected date(s).
-- `getSelected(): Date | Date[] | { from: Date; to: Date }`: Get the selected date(s).
-- `isDateSelected(date: Date): boolean`: Check if a date is selected.
-- `setDisabled(date: Date | Date[]): void`: Set disabled days.
-- `setMinDate(date: Date): void`: Set the minimum valid date.
-- `setMaxDate(date: Date): void`: Set the maximum valid date.
-- `setLocale(locale: Locale): void`: Set the locale for date formatting.
-- `isDateDisabled(date: Date): boolean`: Check if a date is disabled.
+- `getMonthOfDate(date: Date): DPMonth`: Retrieves the month for a given date.
+- `getCurrentMonth(): DPMonth`: Retrieves the current month.
+- `getCalendarMonth(): DPMonth`: Retrieves the month based on the configuration options.
+- `setMonth(month: number): void`: Sets the initial month.
+- `setYear(year: number): void`: Sets the initial year.
+- `setMonthYear(month: number, year: number): void`: Sets both the initial month and year.
+- `setSelected(date: Date | Date[] | { from: Date; to: Date }): void`: Sets selected date(s).
+- `getSelected(): Date | Date[] | { from: Date; to: Date }`: Retrieves selected date(s).
+- `isDateSelected(date: Date): boolean`: Checks if a date is selected.
+- `setDisabled(date: Date | Date[]): void`: Disables specific dates.
+- `setMinDate(date: Date): void` : Specifies minimum valid date.
+-  `setMaxDate(date : Date) : void`.Sets maximum valid date
+- setLocale(locale : Locale) :Set locale for formatting dates
+- isDateDisabled( date : Date) Returns true if a specific datae has been disabled
 
 ## Examples
 
 Here are some usage examples:
 
-### Initializing the Date Picker
+### Initializing the Headless DatePicker Instance
 
 ```javascript
 const datePicker = useHeadlessDatePicker();
 ```
 
-### Setting the Initial Month and Year
+### Setting an Initial Month and Year
 
 ```javascript
-datePicker.setMonth(5); // Set the initial month to June
-datePicker.setYear(2023); // Set the initial year to 2023
+datePicker.setMonth(5); // Set June as the initial month
+datePicker.setYear(2023); // Set 2023 as tthe intiial year
 ```
 
-### Selecting a Date
-
+### Selecting a Specific Day
+ 
 ```javascript
-datePicker.setSelected(new Date(2023, 5, 15)); // Select a single date
+datePicker.setSelected(new  Date (2023, 5,15)); Setsingle day selection by passing in one single dte object
 ```
 
-### Disabling Dates
+### Disabling Specific Dates
 
 ```javascript
-datePicker.setDisabled([new Date(2023, 5, 10), new Date(2023, 5, 20)]); // Disable specific dates
+datePicker.setDisabled([new Date(2023, 5, 10), new Date(2023, 5, 20)]); // Disable specific dates by passing in an array of date objects
 ```
 
 ## License
 
-This composable is released under the MIT License. See the [LICENSE](LICENSE) file for details.
+This composable is released under the MIT License. For more details, see the [LICENSE](LICENSE) file.
