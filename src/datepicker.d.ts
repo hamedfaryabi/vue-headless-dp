@@ -5,6 +5,11 @@ import { Locale } from "date-fns";
  */
 export interface DPBaseOptions {
   /**
+   * Type of the calendar of datepicker
+   */
+  calendar?: "jalali" | "gregorian";
+
+  /**
    * Defines the start of the week.
    * 0 corresponds to Sunday, 1 to Monday, and so on.
    */
