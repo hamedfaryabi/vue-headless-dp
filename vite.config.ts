@@ -19,11 +19,11 @@ export default defineConfig({
       name: "use-headless-date-picker",
     },
     rollupOptions: {
-      external: ["vue", "date-fns", "defu"],
+      external: ["vue", "defu", "@date-io/core"],
       output: {
         globals: {
           vue: "Vue",
-          "date-fns": "date-fns",
+          "@date-io/core": "@date-io/core",
           defu: "defu",
         },
       },
