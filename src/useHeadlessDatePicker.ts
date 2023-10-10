@@ -406,7 +406,6 @@ export function useHeadlessDatePicker(
 
   return {
     // ----- state & options ------
-    options: _options,
     state,
 
     // ----- functions ------
