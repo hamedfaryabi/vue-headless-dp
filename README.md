@@ -1,12 +1,19 @@
-# Vue.js Headless Date Picker Composable Documentation
 
-## Introduction
+# Vue Headless Date Picker
 
-The Vue.js Headless Date Picker Composable is a utility that provides date-related functionality for Vue.js applications. It offers a set of functions and options to manage dates, calendars, and date selections.
+Vue Headless Date Picker is a flexible and customizable date picker composable for Vue 3 that allows you to easily add date selection functionality to your Vue.js applications.
+
+## Features
+
+- Supports single-date, multi-date, and range-date selection modes.
+- Equal-weeks option for consistent week display.
+- Date range limiting with minDate and maxDate options.
+- Easily disable specific dates.
+- No UI, giving you complete control over the user interface.
 
 ## Installation
 
-To use this composable in your Vue.js project, you can install it via npm or yarn:
+To get started, install the `vue-headless-date-picker` package from npm:
 
 ```bash
 npm install vue-headless-date-picker
@@ -16,82 +23,75 @@ yarn add vue-headless-date-picker
 
 ## Usage
 
-### Importing the Composable
-
 ```javascript
-import { useHeadlessDatePicker } from 'vue-headless-date-picker';
+import { useHeadlessDatePicker } from "vue-headless-date-picker";
+
+// Import a `@date-io` adapter, in this case, DateFnsAdapter
+import DateFnsAdapter from "@date-io/date-fns";
+
+// Create a new instance of the DateFnsAdapter
+const adapter = new DateFnsAdapter();
+
+const dp = useHeadlessDatePicker(adapter, {
+  selectType: "single",
+  equalWeeks: false,
+  minDate: new Date(),
+});
+
+dp.selected.value = new Date(2022-01-12);
+console.log(dp.currentYear.value); // 2022
 ```
 
-### Creating a Headless Date Picker Instance
+## Documentation
+
+### `useHeadlessDatePicker(adapter, options)`
+
+This function initializes the Vue Headless Datepicker and returns an object containing various properties and methods to manage the date picker's state and behavior.
+
+**Parameters:**
+
+- `adapter` (required): An instance of a date adapter that implements [`@date-io`](https://github.com/dmtrKovalenko/date-io) adapters. This adapter is used for date-related operations.
+- `options` (optional): An object containing configuration options for the date picker. See [Options](#options) for available options.
+
+**Returns:**
+
+An object with the following properties and methods:
+
+| **Property/Method**                  | **Description**                                                                      | **Type**                    |
+|-------------------------------------|--------------------------------------------------------------------------------------|-----------------------------|
+| `state`                             | An object that holds the internal state of the date picker, including selected dates, current month, and more. | Object                      |
+| `getMonthOfDate(date: Date)`        | A function that takes a `Date` object and returns a `DPMonth` object representing the month containing the provided date. | Function                    |
+| `isDateSelected(date: Date)`        | A function that checks if a given date is selected according to the date picker's selection mode. | Function                    |
+| `isDateDisabled(date: Date)`        | A function that checks if a given date is disabled based on the provided disabled dates. | Function                    |
+| `currentMonth`                      | A computed property that gets or sets the current month of the date picker. It returns a `DPMonth` object. | Computed Property           |
+| `currentYear`                       | A computed property that gets or sets the current year of the date picker.           | Computed Property           |
+| `selected`                          | A computed property that gets or sets the selected date(s) based on the date picker's selection mode. | Computed Property           |
+| `disabled`                          | A computed property that gets or sets the disabled date(s).                           | Computed Property           |
+| `minDate`                           | A computed property that gets or sets the minimum selectable date.                    | Computed Property           |
+| `maxDate`                           | A computed property that gets or sets the maximum selectable date.                    | Computed Property           |
+
+**Note:** All computed properties have getters and setters.
+for example:
 
 ```javascript
-const datePicker = useHeadlessDatePicker();
+    datePicker.minDate.value = new Date(); // set the min date
+    const min = datePicker.minDate; // returns the min date
 ```
 
-### Configuration Options
+### Options
 
-The composable supports the following configuration options:
+Basic configuration options for the date picker
 
-- `calendar` (default: "jalali" | "gregorian"): Specifies the type of calendar to be used ("jalali" or "gregorian").
-- `weekStart` (default: 1): Determines the start day of the week (0 for Sunday, 1 for Monday, etc.).
-- `initialMonth`: Sets the initial month to be displayed.
-- `initialYear`: Sets the initial year to be displayed.
-- `equalWeeks` (default: true): Controls whether days from previous and next months are shown to create equal-length weeks.
-- `selectType` (default: "single" | "multiple" | "range"): Defines the selection mode ("single", "multiple", or "range").
-- `selected`: Represents selected date(s) based on the selection mode.
-- `disabled`: An array of disabled dates.
-- `minDate`: Specifies the minimum valid date.
-- `maxDate`: Specifies the maximum valid date.
-- `locale`: Configures locale settings for date formatting.
-
-### Functions
-
-The composable provides several functions:
-
-- `getMonthOfDate(date: Date): DPMonth`: Retrieves the month for a given date.
-- `getCurrentMonth(): DPMonth`: Retrieves the current month.
-- `getCalendarMonth(): DPMonth`: Retrieves the month based on the configuration options.
-- `setMonth(month: number): void`: Sets the initial month.
-- `setYear(year: number): void`: Sets the initial year.
-- `setMonthYear(month: number, year: number): void`: Sets both the initial month and year.
-- `setSelected(date: Date | Date[] | { from: Date; to: Date }): void`: Sets selected date(s).
-- `getSelected(): Date | Date[] | { from: Date; to: Date }`: Retrieves selected date(s).
-- `isDateSelected(date: Date): boolean`: Checks if a date is selected.
-- `setDisabled(date: Date | Date[]): void`: Disables specific dates.
-- `setMinDate(date: Date): void` : Specifies minimum valid date.
--  `setMaxDate(date : Date) : void`.Sets maximum valid date
-- setLocale(locale : Locale) :Set locale for formatting dates
-- isDateDisabled( date : Date) Returns true if a specific datae has been disabled
-
-## Examples
-
-Here are some usage examples:
-
-### Initializing the Headless DatePicker Instance
-
-```javascript
-const datePicker = useHeadlessDatePicker();
-```
-
-### Setting an Initial Month and Year
-
-```javascript
-datePicker.setMonth(5); // Set June as the initial month
-datePicker.setYear(2023); // Set 2023 as tthe intiial year
-```
-
-### Selecting a Specific Day
- 
-```javascript
-datePicker.setSelected(new  Date (2023, 5,15)); Setsingle day selection by passing in one single dte object
-```
-
-### Disabling Specific Dates
-
-```javascript
-datePicker.setDisabled([new Date(2023, 5, 10), new Date(2023, 5, 20)]); // Disable specific dates by passing in an array of date objects
-```
+| **Property**       | **Description**                                                                                              | **Type**  |
+|--------------------|--------------------------------------------------------------------------------------------------------------|-----------|
+| `initialMonth`     | Value to initialize the month of the date picker. If not provided, displays the current month.              | `number`  |
+| `initialYear`      | Value to initialize the year of the date picker. If not provided, displays the current year.                | `number`  |
+| `equalWeeks`       | If `true`, returns days of the previous month in the first week and days of the next month in the last week. | `boolean` |
+| `selectType`       | Defines the selection type for the date picker (`single`, `multiple`, or `range`).                                 | `string`  |
+| `disabled`         | An array of disabled dates.                                                                                  | `Date[]`  |
+| `minDate`          | The minimum valid date of the date picker.                                                                    | `Date`    |
+| `maxDate`          | The maximum valid date of the date picker.                                                                    | `Date`    |
 
 ## License
 
-This composable is released under the MIT License. For more details, see the [LICENSE](LICENSE) file.
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE.md) file for details.

@@ -1,13 +1,13 @@
 {
-  "name": "vue-headless-datepicker",
-  "private": true,
-  "version": "0.0.1",
+  "name": "vue-headless-date-picker",
+  "private": false,
+  "version": "1.0.0",
   "type": "module",
   "files": [
     "dist"
   ],
-  "main": "./dist/vue-headless-datepicker.umd.cjs",
-  "module": "./dist/vue-headless-datepicker.js",
+  "main": "./dist/vue-headless-date-picker.umd.cjs",
+  "module": "./dist/vue-headless-date-picker.js",
   "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "vite",
@@ -43,3 +43,4 @@
     "defu": "^6.1.2"
   }
 }
+

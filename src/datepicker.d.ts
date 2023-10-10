@@ -1,18 +1,18 @@
 import { IUtils } from "@date-io/core/IUtils";
 
 /**
- * Base options for configuring the behavior of the datepicker.
+ * Base options for configuring the behavior of the date picker.
  */
 export interface DPBaseOptions {
   /**
-   * Value to initialize the month of the datepicker.
+   * Value to initialize the month of the date picker.
    * If provided, displays the selected month starting from this year.
    * If not provided, displays the current month.
    */
   initialMonth?: number;
 
   /**
-   * Value to initialize the year of the datepicker.
+   * Value to initialize the year of the date picker.
    * If provided, displays the selected year.
    * If not provided, displays the current year.
    */
@@ -26,7 +26,7 @@ export interface DPBaseOptions {
   equalWeeks?: boolean;
 
   /**
-   * Defines the selection type for the datepicker.
+   * Defines the selection type for the date picker.
    * - "single": Can select only one date.
    * - "multiple": Can select an array of dates.
    * - "range": Can select a range with a start and end date.
@@ -39,12 +39,12 @@ export interface DPBaseOptions {
   disabled?: Date[];
 
   /**
-   * To specify minimum valid date of the datepicker
+   * To specify minimum valid date of the date picker
    */
   minDate?: Date;
 
   /**
-   * To specify maximum valid date of the datepicker
+   * To specify maximum valid date of the date picker
    */
   maxDate?: Date;
 }
@@ -98,7 +98,7 @@ export type DPDayInWeekName = {
 };
 
 /**
- * Represents a day in the datepicker.
+ * Represents a day in the date picker.
  */
 export interface DPDay {
   date: Date;
@@ -114,7 +114,7 @@ export interface DPDay {
 }
 
 /**
- * Represents a week in the datepicker.
+ * Represents a week in the date picker.
  */
 export interface DPWeek {
   days: DPDay[];
@@ -122,7 +122,7 @@ export interface DPWeek {
 }
 
 /**
- * Represents a month in the datepicker.
+ * Represents a month in the date picker.
  */
 export interface DPMonth {
   name: DPMonthName;

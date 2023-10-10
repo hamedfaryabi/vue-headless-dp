@@ -166,7 +166,7 @@ export function useHeadlessDatePicker(
   };
 
   /**
-   * Converts a date to a datepicker day object.
+   * Converts a date to a date picker day object.
    *
    * @param {Date} date - The date to convert.
    * @returns {DPDay} - The day object.
@@ -207,7 +207,7 @@ export function useHeadlessDatePicker(
   };
 
   /**
-   * Converts an array of dates to an array of datepicker weeks.
+   * Converts an array of dates to an array of date picker weeks.
    *
    * @param {Date[]} dates - The array of dates.
    * @returns {DPWeek[]} - An array of week objects.
@@ -231,7 +231,7 @@ export function useHeadlessDatePicker(
   };
 
   /**
-   * Gets the datepicker month for a given date.
+   * Gets the date picker month for a given date.
    *
    * @param {Date} date - The date for which to retrieve the month information.
    * @returns {DPMonth} - The month object.
@@ -286,7 +286,7 @@ export function useHeadlessDatePicker(
   };
 
   /**
-   * Computed property to get/set the current month of datepicker.
+   * Computed property to get/set the current month of date picker.
    */
   const currentMonth = computed<DPMonth>({
     get() {
@@ -312,7 +312,7 @@ export function useHeadlessDatePicker(
   });
 
   /**
-   * Computed property to get/set the current year of datepicker.
+   * Computed property to get/set the current year of date picker.
    */
   const currentYear = computed<number>({
     get() {
@@ -324,7 +324,7 @@ export function useHeadlessDatePicker(
   });
 
   /**
-   * Computed property to get/set the selected dates of datepicker.
+   * Computed property to get/set the selected dates of date picker.
    */
   const selected = computed<(typeof state)["selected"]>({
     get() {
@@ -363,7 +363,7 @@ export function useHeadlessDatePicker(
   });
 
   /**
-   * Computed property to get/set the disabled dates of datepicker.
+   * Computed property to get/set the disabled dates of date picker.
    */
   const disabled = computed<Date | Date[]>({
     get() {
@@ -379,7 +379,7 @@ export function useHeadlessDatePicker(
   });
 
   /**
-   * Computed property to get/set the minimum selectable date of datepicker.
+   * Computed property to get/set the minimum selectable date of date picker.
    */
   const minDate = computed<Date | undefined>({
     get() {
@@ -392,7 +392,7 @@ export function useHeadlessDatePicker(
   });
 
   /**
-   * Computed property to get/set the maximum selectable date of datepicker.
+   * Computed property to get/set the maximum selectable date of date picker.
    */
   const maxDate = computed<Date | undefined>({
     get() {
