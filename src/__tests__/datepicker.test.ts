@@ -1,51 +1,63 @@
 import { useHeadlessDatePicker } from "./../useHeadlessDatePicker";
+import DateFnsAdapter from "@date-io/date-fns";
+import FaIR from "date-fns/locale/fa-IR";
 
 describe("useHeadlessDatePicker", () => {
+  const adapter = new DateFnsAdapter({ locale: FaIR });
   it("should select a single date", () => {
-    const dp = useHeadlessDatePicker();
+    const { selected } = useHeadlessDatePicker(adapter, {
+      selectType: "single",
+      equalWeeks: false,
+    });
 
     // Set a selected date
     const selectedDate = new Date("2023-09-10");
-    dp.setSelected(selectedDate);
+    selected.value = selectedDate;
 
     // Assert that the selected date is set correctly
-    expect(dp.getSelected()).toEqual(selectedDate);
+    expect(selected.value).toEqual(selectedDate);
   });
 
   it("should select multiple dates", () => {
-    const dp = useHeadlessDatePicker({ selectType: "multiple" });
+    const { selected } = useHeadlessDatePicker(adapter, {
+      selectType: "multiple",
+    });
 
     // Set selected dates as an array
     const selectedDates = [new Date("2023-09-10"), new Date("2023-09-11")];
-    dp.setSelected(selectedDates);
+    selected.value = selectedDates;
 
     // Assert that the selected dates are set correctly
-    expect(dp.getSelected()).toEqual(selectedDates);
+    expect(selected.value).toEqual(selectedDates);
   });
 
   it("should select a date range", () => {
-    const dp = useHeadlessDatePicker({ selectType: "range" });
+    const { selected } = useHeadlessDatePicker(adapter, {
+      selectType: "range",
+    });
 
     // Set a date range object
     const dateRange = {
       from: new Date("2023-09-10"),
       to: new Date("2023-09-15"),
     };
-    dp.setSelected(dateRange);
+    selected.value = dateRange;
 
     // Assert that the date range is set correctly
-    expect(dp.getSelected()).toEqual(dateRange);
+    expect(selected.value).toEqual(dateRange);
   });
 
   it("should set and check disabled dates", () => {
-    const dp = useHeadlessDatePicker({ selectType: "range" });
+    const { disabled, isDateDisabled } = useHeadlessDatePicker(adapter, {
+      selectType: "range",
+    });
 
     // Set disabled dates
     const disabledDates = [new Date("2023-09-12"), new Date("2023-09-13")];
-    dp.setDisabled(disabledDates);
+    disabled.value = disabledDates;
 
     // Check if disabled dates are correctly identified
-    expect(dp.isDateDisabled(new Date("2023-09-12"))).toBe(true);
-    expect(dp.isDateDisabled(new Date("2023-09-14"))).toBe(false);
+    expect(isDateDisabled(new Date("2023-09-12"))).toBe(true);
+    expect(isDateDisabled(new Date("2023-09-14"))).toBe(false);
   });
 });

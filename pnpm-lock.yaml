@@ -19,6 +19,9 @@ devDependencies:
   '@babel/preset-env':
     specifier: ^7.22.15
     version: 7.22.15(@babel/core@7.22.17)
+  '@date-io/date-fns':
+    specifier: ^2.17.0
+    version: 2.17.0(date-fns@2.30.0)
   '@jest/types':
     specifier: ^29.6.3
     version: 29.6.3
@@ -37,6 +40,9 @@ devDependencies:
   babel-jest:
     specifier: ^29.6.4
     version: 29.6.4(@babel/core@7.22.17)
+  date-fns:
+    specifier: ^2.30.0
+    version: 2.30.0
   date-fns-jalali:
     specifier: 2.30.0-0
     version: 2.30.0-0
@@ -1270,7 +1276,18 @@ packages:
 
   /@date-io/core@2.17.0:
     resolution: {integrity: sha512-+EQE8xZhRM/hsY0CDTVyayMDDY5ihc4MqXCrPxooKw19yAzUIC6uUqsZeaOFNL9YKTNxYKrJP5DFgE8o5xRCOw==}
-    dev: false
+
+  /@date-io/date-fns@2.17.0(date-fns@2.30.0):
+    resolution: {integrity: sha512-L0hWZ/mTpy3Gx/xXJ5tq5CzHo0L7ry6KEO9/w/JWiFWFLZgiNVo3ex92gOl3zmzjHqY/3Ev+5sehAr8UnGLEng==}
+    peerDependencies:
+      date-fns: ^2.0.0
+    peerDependenciesMeta:
+      date-fns:
+        optional: true
+    dependencies:
+      '@date-io/core': 2.17.0
+      date-fns: 2.30.0
+    dev: true
 
   /@esbuild/android-arm64@0.18.20:
     resolution: {integrity: sha512-Nz4rJcchGDtENV0eMKUNa6L12zz2zBDXuhj/Vjh18zGqB44Bi7MBMSXjgunJgjRhCmKOjnPuZp4Mb6OKqtMHLQ==}
@@ -2754,6 +2771,13 @@ packages:
 
   /date-fns-jalali@2.30.0-0:
     resolution: {integrity: sha512-2wz5AOzd3oQ+PnL3E/iKvJZ14i6oTp15sW047ZFCOgM9OSP8ggbb9jm/4SKI8ejdUGH96Krb5dfEQe8zbkVyZw==}
+    engines: {node: '>=0.11'}
+    dependencies:
+      '@babel/runtime': 7.22.15
+    dev: true
+
+  /date-fns@2.30.0:
+    resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
     engines: {node: '>=0.11'}
     dependencies:
       '@babel/runtime': 7.22.15

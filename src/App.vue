@@ -1,23 +1,18 @@
 <script lang="ts" setup>
 import { useHeadlessDatePicker } from ".";
+import DateFnsAdapter from "@date-io/date-fns";
 
-const dp = useHeadlessDatePicker({
-  calendar: "gregorian",
-  weekStart: 6,
+const adapter = new DateFnsAdapter();
+
+const dp = useHeadlessDatePicker(adapter, {
   selectType: "single",
   equalWeeks: false,
   minDate: new Date(),
 });
 
-dp.setSelected(new Date());
+dp.selected.value = new Date();
 
-console.log(dp.dateLib.value.getDefaultOptions());
-
-console.log(dp.getCurrentMonth());
-dp.options.calendar = "jalali";
-setTimeout(() => {
-  console.log(dp.getCurrentMonth());
-}, 3000);
+console.log(dp.currentYear.value);
 </script>
 
 <template>
