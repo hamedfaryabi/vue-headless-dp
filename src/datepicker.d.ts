@@ -1,19 +1,10 @@
-import { Locale } from "date-fns";
+import { IUtils } from "@date-io/core/IUtils";
 
 /**
  * Base options for configuring the behavior of the datepicker.
  */
 export interface DPBaseOptions {
-  /**
-   * Type of the calendar of datepicker
-   */
-  calendar?: "jalali" | "gregorian";
-
-  /**
-   * Defines the start of the week.
-   * 0 corresponds to Sunday, 1 to Monday, and so on.
-   */
-  weekStart?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+  adapter: IUtils<Date> | null;
 
   /**
    * Value to initialize the month of the datepicker.
@@ -58,8 +49,6 @@ export interface DPBaseOptions {
    * To specify maximum valid date of the datepicker
    */
   maxDate?: Date;
-
-  locale?: Locale;
 }
 
 /**
@@ -98,19 +87,16 @@ export type DPOptions =
  * Represents the full name of a month.
  */
 export type DPMonthName = {
-  narrow: string;
-  abbreviated: string;
-  wide: string;
+  full: string;
+  short: string;
 };
 
 /**
  * Represents the full name of a day in a week.
  */
 export type DPDayInWeekName = {
-  narrow: string;
+  full: string;
   short: string;
-  abbreviated: string;
-  wide: string;
 };
 
 /**
@@ -122,7 +108,7 @@ export interface DPDay {
   monthindex: number;
   today: boolean;
   weekName: DPDayInWeekName;
-  inMonth: boolean;
+  thisMonth: boolean;
   selected: boolean;
   disabled: boolean;
   belowMin: boolean;
