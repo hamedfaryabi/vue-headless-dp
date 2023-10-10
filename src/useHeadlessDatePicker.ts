@@ -113,13 +113,15 @@ export function useHeadlessDatePicker(
    * @returns {boolean} - True if the date is selected, false otherwise.
    */
   const isDateSelected = (date: Date): boolean => {
-    if (!_options.selected || !checkDate(date)) return false;
+    if (!state.selected || !checkDate(date)) return false;
 
     switch (_options.selectType) {
       case "single":
-        return adapter.isSameDay(date, _options.selected);
+        return adapter.isSameDay(date, state.selected as Date);
       case "multiple":
-        return _options.selected.some((d) => adapter.isSameDay(date, d));
+        return (state.selected as Date[]).some((d) =>
+          adapter.isSameDay(date, d)
+        );
       case "range":
         return isWithinRange(date);
       default:
@@ -135,11 +137,11 @@ export function useHeadlessDatePicker(
    */
 
   const isDateDisabled = (date: Date): boolean => {
-    if (!_options.disabled || _options.disabled.length < 1 || !checkDate(date))
+    if (!state.disabled || state.disabled.length < 1 || !checkDate(date))
       return false;
 
     return (
-      _options.disabled.findIndex((d: Date) => adapter.isSameDay(date, d)) > -1
+      state.disabled.findIndex((d: Date) => adapter.isSameDay(date, d)) > -1
     );
   };
 
@@ -152,9 +154,9 @@ export function useHeadlessDatePicker(
    * @returns {boolean} - True if the date is within the range, false otherwise.
    */
   const isWithinRange = (date: Date): boolean => {
-    if (!_options.selected || !checkDate(date)) return false;
+    if (!state.selected || !checkDate(date)) return false;
 
-    const selected = _options.selected as { from: Date; to: Date };
+    const selected = state.selected as { from: Date; to: Date };
     const interval: [Date, Date] = [
       adapter.startOfDay(selected.from),
       adapter.endOfDay(selected.to),
@@ -172,17 +174,17 @@ export function useHeadlessDatePicker(
   const dateToDay = (date: Date): DPDay => {
     checkDate(date);
 
-    const isBelowMinDate = _options.minDate
+    const isBelowMinDate = state.minDate
       ? adapter.isBefore(
           adapter.startOfDay(date),
-          adapter.startOfDay(_options.minDate)
+          adapter.startOfDay(state.minDate)
         )
       : false;
 
-    const isAboveMaxDate = _options.maxDate
+    const isAboveMaxDate = state.maxDate
       ? adapter.isAfter(
           adapter.startOfDay(date),
-          adapter.startOfDay(_options.maxDate)
+          adapter.startOfDay(state.maxDate)
         )
       : false;
 
@@ -198,7 +200,7 @@ export function useHeadlessDatePicker(
       thisMonth: adapter.isSameMonth(date, new Date()),
       selected: isDateSelected(date),
       disabled:
-        _options.disabled?.some((d) => adapter.isSameDay(d, date)) || false,
+        state.disabled?.some((d) => adapter.isSameDay(d, date)) || false,
       belowMin: isBelowMinDate,
       aboveMax: isAboveMaxDate,
     };
