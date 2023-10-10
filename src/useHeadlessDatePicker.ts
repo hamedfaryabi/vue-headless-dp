@@ -3,6 +3,13 @@ import { defu } from "defu";
 import { computed, reactive } from "vue";
 import { IUtils } from "@date-io/core/IUtils";
 
+/**
+ * Calculates the week index of a given date within a month.
+ *
+ * @param {Date} date - The date for which to calculate the week index.
+ * @param {IUtils<Date>} adapter - The date adapter.
+ * @returns {number} - The week index.
+ */
 function getWeekIndex(date: Date, adapter: IUtils<Date>): number {
   const monthStart = adapter.startOfMonth(date);
   const currentDate = date.getDate();
@@ -20,6 +27,14 @@ function getWeekIndex(date: Date, adapter: IUtils<Date>): number {
   return weekIndex;
 }
 
+/**
+ * Retrieves each day within the specified date interval.
+ *
+ * @param {Date} start - The start date of the interval.
+ * @param {Date} end - The end date of the interval.
+ * @param {IUtils<Date>} adapter - The date adapter.
+ * @returns {Date[]} - An array of dates within the interval.
+ */
 function getEachDayOfInterval(
   start: Date,
   end: Date,
@@ -73,6 +88,14 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     maxDate: _options.maxDate,
   });
 
+  /**
+   * Checks if a date is valid.
+   *
+   * @param {Date|undefined} date - The date to check.
+   * @param {boolean} allowUndefined - Whether to allow undefined dates.
+   * @returns {boolean} - True if the date is valid, false otherwise.
+   * @throws {Error} - Throws an error if the provided date is invalid.
+   */
   const checkDate = (
     date: Date | undefined,
     allowUndefined?: boolean
@@ -84,6 +107,13 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     if (_options.adapter!.isValid(date)) return true;
     else throw new Error("The provided date is invalid");
   };
+
+  /**
+   * Checks if a date is selected.
+   *
+   * @param {Date} date - The date to check.
+   * @returns {boolean} - True if the date is selected, false otherwise.
+   */
   const isDateSelected = (date: Date): boolean => {
     if (!_options.selected || !checkDate(date)) return false;
 
@@ -101,6 +131,13 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     }
   };
 
+  /**
+   * Checks if a date is disabled.
+   *
+   * @param {Date} date - The date to check.
+   * @returns {boolean} - True if the date is disabled, false otherwise.
+   */
+
   const isDateDisabled = (date: Date): boolean => {
     if (!_options.disabled || _options.disabled.length < 1 || !checkDate(date))
       return false;
@@ -112,6 +149,14 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     );
   };
 
+  /**
+   * Checks if a date is within a selected range.
+   *
+   * **Note: Only works if type is "range"**
+   *
+   * @param {Date} date - The date to check.
+   * @returns {boolean} - True if the date is within the range, false otherwise.
+   */
   const isWithinRange = (date: Date): boolean => {
     if (!_options.selected || !checkDate(date)) return false;
 
@@ -124,6 +169,12 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     return _options.adapter!.isWithinRange(date, interval);
   };
 
+  /**
+   * Converts a date to a datepicker day object.
+   *
+   * @param {Date} date - The date to convert.
+   * @returns {DPDay} - The day object.
+   */
   const dateToDay = (date: Date): DPDay => {
     checkDate(date);
 
@@ -160,6 +211,12 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     };
   };
 
+  /**
+   * Converts an array of dates to an array of datepicker weeks.
+   *
+   * @param {Date[]} dates - The array of dates.
+   * @returns {DPWeek[]} - An array of week objects.
+   */
   const datesToWeeks = (dates: Date[]): DPWeek[] => {
     dates.every((date) => checkDate(date));
     const daysByWeeks = dates.reduce((acc: DPDay[][], date) => {
@@ -178,6 +235,12 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     }));
   };
 
+  /**
+   * Gets the datepicker month for a given date.
+   *
+   * @param {Date} date - The date for which to retrieve the month information.
+   * @returns {DPMonth} - The month object.
+   */
   const getMonthOfDate = (date: Date): DPMonth => {
     checkDate(date);
     const monthStart = _options.adapter!.startOfMonth(date),
@@ -231,6 +294,9 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     return month;
   };
 
+  /**
+   * Computed property to get/set the current month of datepicker.
+   */
   const currentMonth = computed<DPMonth>({
     get() {
       const d = new Date();
@@ -254,6 +320,9 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     },
   });
 
+  /**
+   * Computed property to get/set the current year of datepicker.
+   */
   const currentYear = computed<number>({
     get() {
       return state.currentYear;
@@ -263,6 +332,9 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     },
   });
 
+  /**
+   * Computed property to get/set the selected dates of datepicker.
+   */
   const selected = computed<(typeof state)["selected"]>({
     get() {
       return state.selected;
@@ -299,6 +371,9 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     },
   });
 
+  /**
+   * Computed property to get/set the disabled dates of datepicker.
+   */
   const disabled = computed<Date | Date[]>({
     get() {
       return state.disabled;
@@ -312,6 +387,9 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     },
   });
 
+  /**
+   * Computed property to get/set the minimum selectable date of datepicker.
+   */
   const minDate = computed<Date | undefined>({
     get() {
       return state.minDate;
@@ -322,6 +400,9 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     },
   });
 
+  /**
+   * Computed property to get/set the maximum selectable date of datepicker.
+   */
   const maxDate = computed<Date | undefined>({
     get() {
       return state.maxDate;
@@ -332,18 +413,22 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     },
   });
 
-  // Return all functions as an object
   return {
+    // ----- state & options ------
     options: _options,
     state,
+
+    // ----- functions ------
     getMonthOfDate,
+    isDateSelected,
+    isDateDisabled,
+
+    // ----- values ------
     currentMonth,
     currentYear,
     selected,
-    isDateSelected,
     disabled,
     minDate,
     maxDate,
-    isDateDisabled,
   };
 }
