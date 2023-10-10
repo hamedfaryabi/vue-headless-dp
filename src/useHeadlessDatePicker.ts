@@ -3,11 +3,10 @@ import { defu } from "defu";
 import { computed, reactive } from "vue";
 import { IUtils } from "@date-io/core/IUtils";
 
-function getWeekIndex(date: Date, adapter: IUtils<Date>) {
+function getWeekIndex(date: Date, adapter: IUtils<Date>): number {
   const monthStart = adapter.startOfMonth(date);
   const currentDate = date.getDate();
 
-  // Calculate the week index
   let weekIndex = 0;
   let currentDay = monthStart;
 
@@ -21,14 +20,14 @@ function getWeekIndex(date: Date, adapter: IUtils<Date>) {
   return weekIndex;
 }
 
-function getEachDayOfInterval(start: Date, end: Date, adapter: IUtils<Date>) {
+function getEachDayOfInterval(
+  start: Date,
+  end: Date,
+  adapter: IUtils<Date>
+): Date[] {
   let current = adapter.date(start);
 
-  if (!current) {
-    return [];
-  }
-
-  if (adapter.isAfterDay(start, end)) {
+  if (!current || adapter.isAfterDay(start, end)) {
     return [];
   }
 
