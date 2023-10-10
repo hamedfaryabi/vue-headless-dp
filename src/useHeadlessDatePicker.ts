@@ -1,6 +1,6 @@
 import type { DPDay, DPMonth, DPOptions, DPWeek } from "./datepicker";
 import { defu } from "defu";
-import { ComputedRef, computed, reactive, ref, watchEffect } from "vue";
+import { computed, reactive } from "vue";
 import { IUtils } from "@date-io/core/IUtils";
 
 function getWeekIndex(date: Date, adapter: IUtils<Date>) {
@@ -74,7 +74,14 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     maxDate: _options.maxDate,
   });
 
-  const checkDate = (date: Date): boolean => {
+  const checkDate = (
+    date: Date | undefined,
+    allowUndefined?: boolean
+  ): boolean => {
+    if (allowUndefined && !date) {
+      return true;
+    }
+
     if (_options.adapter!.isValid(date)) return true;
     else throw new Error("The provided date is invalid");
   };
@@ -225,88 +232,106 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     return month;
   };
 
-  const currentMonth: ComputedRef<DPMonth> = computed<DPMonth>((): DPMonth => {
-    const d = new Date();
-    if (state.currentYear) {
-      d.setFullYear(state.currentYear);
-    }
-    if (state.currentMonth) {
-      d.setMonth(state.currentMonth - 1);
-    }
+  const currentMonth = computed<DPMonth>({
+    get() {
+      const d = new Date();
+      if (state.currentYear) {
+        d.setFullYear(state.currentYear);
+      }
+      if (state.currentMonth) {
+        d.setMonth(state.currentMonth - 1);
+      }
 
-    return getMonthOfDate(d);
+      return getMonthOfDate(d);
+    },
+    set(month: DPMonth | number) {
+      if (typeof month === "number") {
+        state.currentMonth = month;
+      } else if ("number" in month) {
+        state.currentMonth = month.number;
+      } else {
+        throw new Error("The given month is not correct format of month");
+      }
+    },
   });
 
-  const setMonth = (month: (typeof state)["currentMonth"]): void => {
-    state.currentMonth = month;
-  };
+  const currentYear = computed<number>({
+    get() {
+      return state.currentYear;
+    },
+    set(year: number) {
+      state.currentYear = year;
+    },
+  });
 
-  const setYear = (year: (typeof state)["currentYear"]): void => {
-    state.currentYear = year;
-  };
+  const selected = computed<(typeof state)["selected"]>({
+    get() {
+      return state.selected;
+    },
+    set(date: (typeof state)["selected"]) {
+      if (!date) {
+        throw new Error("No date provided.");
+      }
 
-  const setMonthYear = (
-    month: (typeof state)["currentMonth"],
-    year: (typeof state)["currentYear"]
-  ): void => {
-    state.currentMonth = month;
-    state.currentYear = year;
-  };
+      const { selectType } = _options;
 
-  const setSelected = (date: DPOptions["selected"]): void => {
-    if (!date) {
-      throw new Error("No date provided.");
-    }
+      if (selectType === "single" && !(date instanceof Date)) {
+        throw new Error("Invalid date format for 'single' selectType");
+      }
 
-    const { selectType } = _options;
+      if (
+        selectType === "multiple" &&
+        (!Array.isArray(date) || !date.every((d) => d instanceof Date))
+      ) {
+        throw new Error("Invalid date format for 'multiple' selectType");
+      }
 
-    if (selectType === "single" && !(date instanceof Date)) {
-      throw new Error("Invalid date format for 'single' selectType");
-    }
+      if (
+        selectType === "range" &&
+        (!("from" in date) ||
+          !("to" in date) ||
+          !(date.from instanceof Date) ||
+          !(date.to instanceof Date))
+      ) {
+        throw new Error("Invalid date format for 'range' selectType");
+      }
 
-    if (
-      selectType === "multiple" &&
-      (!Array.isArray(date) || !date.every((d) => d instanceof Date))
-    ) {
-      throw new Error("Invalid date format for 'multiple' selectType");
-    }
+      state.selected = date;
+    },
+  });
 
-    if (
-      selectType === "range" &&
-      (!("from" in date) ||
-        !("to" in date) ||
-        !(date.from instanceof Date) ||
-        !(date.to instanceof Date))
-    ) {
-      throw new Error("Invalid date format for 'range' selectType");
-    }
+  const disabled = computed<Date | Date[]>({
+    get() {
+      return state.disabled;
+    },
+    set(date: Date | Date[]) {
+      if (!Array.isArray(date)) {
+        date = [date];
+      } else {
+        state.disabled = date;
+      }
+    },
+  });
 
-    _options.selected = date;
-  };
+  const minDate = computed<Date | undefined>({
+    get() {
+      return state.minDate;
+    },
+    set(date?: Date) {
+      checkDate(date, true);
+      state.minDate = date;
+    },
+  });
 
-  const getSelected = (): DPOptions["selected"] => {
-    return _options.selected;
-  };
-
-  const setDisabled = (date: Date | Date[]) => {
-    if (!Array.isArray(date)) {
-      date = [date];
-    }
-
-    if (date.every((d) => checkDate(d))) {
-      _options.disabled = [...(_options.disabled || []), ...date];
-    }
-  };
-
-  const setMinDate = (date: Date) => {
-    checkDate(date);
-    _options.minDate = date;
-  };
-
-  const setMaxDate = (date: Date) => {
-    checkDate(date);
-    _options.maxDate = date;
-  };
+  const maxDate = computed<Date | undefined>({
+    get() {
+      return state.maxDate;
+    },
+    set(date?: Date) {
+      checkDate(date, true);
+      state.maxDate = date;
+    },
+  });
 
   // Return all functions as an object
   return {
@@ -314,15 +339,12 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     state,
     getMonthOfDate,
     currentMonth,
-    setMonth,
-    setYear,
-    setMonthYear,
-    setSelected,
-    getSelected,
+    currentYear,
+    selected,
     isDateSelected,
-    setDisabled,
-    setMinDate,
-    setMaxDate,
+    disabled,
+    minDate,
+    maxDate,
     isDateDisabled,
   };
 }
