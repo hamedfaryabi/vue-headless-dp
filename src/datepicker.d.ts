@@ -4,8 +4,6 @@ import { IUtils } from "@date-io/core/IUtils";
  * Base options for configuring the behavior of the datepicker.
  */
 export interface DPBaseOptions {
-  adapter: IUtils<Date> | null;
-
   /**
    * Value to initialize the month of the datepicker.
    * If provided, displays the selected month starting from this year.

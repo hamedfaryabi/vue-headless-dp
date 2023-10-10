@@ -59,9 +59,11 @@ function getEachDayOfInterval(
   return days;
 }
 
-export function useHeadlessDatePicker(options?: DPOptions) {
+export function useHeadlessDatePicker(
+  adapter: IUtils<Date>,
+  options?: DPOptions
+) {
   const optionsRef: DPOptions = reactive<DPOptions>({
-    adapter: null,
     initialMonth: undefined,
     initialYear: undefined,
     equalWeeks: true,
@@ -74,10 +76,6 @@ export function useHeadlessDatePicker(options?: DPOptions) {
 
   // Merge provided options with default options
   const _options = reactive<DPOptions>(defu(options, optionsRef) as DPOptions);
-
-  if (!_options.adapter!) {
-    throw new Error("Please define adapter in options");
-  }
 
   const state = reactive({
     selected: _options.selected,
@@ -104,7 +102,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
       return true;
     }
 
-    if (_options.adapter!.isValid(date)) return true;
+    if (adapter.isValid(date)) return true;
     else throw new Error("The provided date is invalid");
   };
 
@@ -119,11 +117,9 @@ export function useHeadlessDatePicker(options?: DPOptions) {
 
     switch (_options.selectType) {
       case "single":
-        return _options.adapter!.isSameDay(date, _options.selected);
+        return adapter.isSameDay(date, _options.selected);
       case "multiple":
-        return _options.selected.some((d) =>
-          _options.adapter!.isSameDay(date, d)
-        );
+        return _options.selected.some((d) => adapter.isSameDay(date, d));
       case "range":
         return isWithinRange(date);
       default:
@@ -143,9 +139,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
       return false;
 
     return (
-      _options.disabled.findIndex((d: Date) =>
-        _options.adapter!.isSameDay(date, d)
-      ) > -1
+      _options.disabled.findIndex((d: Date) => adapter.isSameDay(date, d)) > -1
     );
   };
 
@@ -162,11 +156,11 @@ export function useHeadlessDatePicker(options?: DPOptions) {
 
     const selected = _options.selected as { from: Date; to: Date };
     const interval: [Date, Date] = [
-      _options.adapter!.startOfDay(selected.from),
-      _options.adapter!.endOfDay(selected.to),
+      adapter.startOfDay(selected.from),
+      adapter.endOfDay(selected.to),
     ];
 
-    return _options.adapter!.isWithinRange(date, interval);
+    return adapter.isWithinRange(date, interval);
   };
 
   /**
@@ -179,33 +173,32 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     checkDate(date);
 
     const isBelowMinDate = _options.minDate
-      ? _options.adapter!.isBefore(
-          _options.adapter!.startOfDay(date),
-          _options.adapter!.startOfDay(_options.minDate)
+      ? adapter.isBefore(
+          adapter.startOfDay(date),
+          adapter.startOfDay(_options.minDate)
         )
       : false;
 
     const isAboveMaxDate = _options.maxDate
-      ? _options.adapter!.isAfter(
-          _options.adapter!.startOfDay(date),
-          _options.adapter!.startOfDay(_options.maxDate)
+      ? adapter.isAfter(
+          adapter.startOfDay(date),
+          adapter.startOfDay(_options.maxDate)
         )
       : false;
 
     return {
       date,
-      monthindex: _options.adapter!.getDate(date),
-      today: _options.adapter!.isSameDay(date, new Date()),
-      weekIndex: getWeekIndex(date, _options.adapter!),
+      monthindex: adapter.getDate(date),
+      today: adapter.isSameDay(date, new Date()),
+      weekIndex: getWeekIndex(date, adapter),
       weekName: {
-        full: _options.adapter!.format(date, "weekday"),
-        short: _options.adapter!.format(date, "weekdayShort"),
+        full: adapter.format(date, "weekday"),
+        short: adapter.format(date, "weekdayShort"),
       },
-      thisMonth: _options.adapter!.isSameMonth(date, new Date()),
+      thisMonth: adapter.isSameMonth(date, new Date()),
       selected: isDateSelected(date),
       disabled:
-        _options.disabled?.some((d) => _options.adapter!.isSameDay(d, date)) ||
-        false,
+        _options.disabled?.some((d) => adapter.isSameDay(d, date)) || false,
       belowMin: isBelowMinDate,
       aboveMax: isAboveMaxDate,
     };
@@ -220,7 +213,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
   const datesToWeeks = (dates: Date[]): DPWeek[] => {
     dates.every((date) => checkDate(date));
     const daysByWeeks = dates.reduce((acc: DPDay[][], date) => {
-      const weekNumber = getWeekIndex(date, _options.adapter!);
+      const weekNumber = getWeekIndex(date, adapter);
       const day: DPDay = dateToDay(date);
 
       if (!acc[weekNumber - 1]) acc[weekNumber - 1] = [];
@@ -231,7 +224,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
 
     return daysByWeeks.map((days) => ({
       days: days,
-      number: getWeekIndex(days[0].date, _options.adapter!),
+      number: getWeekIndex(days[0].date, adapter),
     }));
   };
 
@@ -243,14 +236,10 @@ export function useHeadlessDatePicker(options?: DPOptions) {
    */
   const getMonthOfDate = (date: Date): DPMonth => {
     checkDate(date);
-    const monthStart = _options.adapter!.startOfMonth(date),
-      monthEnd = _options.adapter!.endOfMonth(date);
+    const monthStart = adapter.startOfMonth(date),
+      monthEnd = adapter.endOfMonth(date);
 
-    const allDays = getEachDayOfInterval(
-      monthStart,
-      monthEnd,
-      _options.adapter!
-    );
+    const allDays = getEachDayOfInterval(monthStart, monthEnd, adapter);
     const weeks: DPWeek[] = datesToWeeks(allDays);
 
     // Code to ensure equal weeks, if applicable
@@ -261,7 +250,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
 
         for (let index = 1; index <= diff; index++) {
           weeks[0].days.unshift(
-            dateToDay(_options.adapter!.addDays(startDate, index * -1))
+            dateToDay(adapter.addDays(startDate, index * -1))
           );
         }
       }
@@ -274,7 +263,7 @@ export function useHeadlessDatePicker(options?: DPOptions) {
 
         for (let index = 1; index <= diff; index++) {
           weeks[weeksLastIndex].days.push(
-            dateToDay(_options.adapter!.addDays(startDate, index))
+            dateToDay(adapter.addDays(startDate, index))
           );
         }
       }
@@ -284,11 +273,11 @@ export function useHeadlessDatePicker(options?: DPOptions) {
     const month: DPMonth = {
       weeks: weeks,
       name: {
-        full: _options.adapter!.format(sampleDate, "month"),
-        short: _options.adapter!.format(sampleDate, "monthShort"),
+        full: adapter.format(sampleDate, "month"),
+        short: adapter.format(sampleDate, "monthShort"),
       },
-      number: _options.adapter!.getMonth(sampleDate) + 1,
-      year: _options.adapter!.getYear(sampleDate),
+      number: adapter.getMonth(sampleDate) + 1,
+      year: adapter.getYear(sampleDate),
     };
 
     return month;
