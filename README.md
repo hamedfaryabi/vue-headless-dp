@@ -16,15 +16,15 @@ Vue Headless Date Picker is a flexible and customizable date picker composable f
 To get started, install the `vue-headless-date-picker` package from npm:
 
 ```bash
-npm install vue-headless-date-picker
+npm install @hamedfaryabi/vue-headless-date-picker
 # or
-yarn add vue-headless-date-picker
+yarn add @hamedfaryabi/vue-headless-date-picker
 ```
 
 ## Usage
 
 ```javascript
-import { useHeadlessDatePicker } from "vue-headless-date-picker";
+import { useHeadlessDatePicker } from "@hamedfaryabi/vue-headless-date-picker";
 
 // Import a `@date-io` adapter, in this case, DateFnsAdapter
 import DateFnsAdapter from "@date-io/date-fns";
