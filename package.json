@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Vue Headless Date Picker is a no ui date picker for vuejs 3",
   "type": "module",
-  "author": "Hamed Faryabi <hamed.faryabi9@gmail.com> (https://github.com/hamedfaryabi)",
+  "author": "Hamed Faryabi",
   "files": [
     "dist"
   ],
@@ -44,6 +44,18 @@
     "@date-io/core": "^2.17.0",
     "defu": "^6.1.2"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hamedfaryabi/vue-headless-date-picker"
+  },
+  "homepage": "https://github.com/hamedfaryabi/vue-headless-date-picker",
+  "keywords": [
+    "datepicker",
+    "date picker",
+    "vuejs",
+    "vuejs 3",
+    "vue 3"
+  ]
 }
 
