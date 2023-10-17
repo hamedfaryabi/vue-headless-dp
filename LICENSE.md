@@ -1,5 +1,3 @@
-# LICENSE
-
 MIT License with Attribution
 
 Copyright (c) 2023-present Hamed Faryabi
