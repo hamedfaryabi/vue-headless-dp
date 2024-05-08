@@ -1,16 +1,16 @@
-import type { DPDay, DPMonth, DPOptions, DPWeek } from "./datepicker";
+import { IUtils } from "@date-io/core/IUtils";
 import { defu } from "defu";
 import { computed, reactive } from "vue";
-import { IUtils } from "@date-io/core/IUtils";
+import type { DPDay, DPMonth, DPOptions, DPWeek } from "./datepicker";
 
 /**
  * Calculates the week index of a given date within a month.
  *
  * @param {Date} date - The date for which to calculate the week index.
- * @param {IUtils<Date>} adapter - The date adapter.
+ * @param {IUtils<Date, any>} adapter - The date adapter.
  * @returns {number} - The week index.
  */
-function getWeekIndex(date: Date, adapter: IUtils<Date>): number {
+function getWeekIndex(date: Date, adapter: IUtils<Date, any>): number {
   const monthStart = adapter.startOfMonth(date);
   const currentDate = date.getDate();
 
@@ -32,13 +32,13 @@ function getWeekIndex(date: Date, adapter: IUtils<Date>): number {
  *
  * @param {Date} start - The start date of the interval.
  * @param {Date} end - The end date of the interval.
- * @param {IUtils<Date>} adapter - The date adapter.
+ * @param {IUtils<Date, any>} adapter - The date adapter.
  * @returns {Date[]} - An array of dates within the interval.
  */
 function getEachDayOfInterval(
   start: Date,
   end: Date,
-  adapter: IUtils<Date>
+  adapter: IUtils<Date, any>
 ): Date[] {
   let current = adapter.date(start);
 
@@ -60,7 +60,7 @@ function getEachDayOfInterval(
 }
 
 export function useHeadlessDatePicker(
-  adapter: IUtils<Date>,
+  adapter: IUtils<Date, any>,
   options?: DPOptions
 ) {
   const optionsRef: DPOptions = reactive<DPOptions>({
@@ -200,7 +200,7 @@ export function useHeadlessDatePicker(
       thisMonth: adapter.isSameMonth(date, new Date()),
       selected: isDateSelected(date),
       disabled:
-        state.disabled?.some((d) => adapter.isSameDay(d, date)) || false,
+        state.disabled?.some((d: Date) => adapter.isSameDay(d, date)) || false,
       belowMin: isBelowMinDate,
       aboveMax: isAboveMaxDate,
     };
