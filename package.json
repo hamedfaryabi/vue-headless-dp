@@ -17,7 +17,8 @@
     "test": "jest"
   },
   "peerDependencies": {
-    "vue": "^3.3.0"
+    "vue": "^3.3.0",
+    "@date-io/core": "^3.0.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.24.5",
