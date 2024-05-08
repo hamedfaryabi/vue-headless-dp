@@ -1,9 +1,9 @@
-import { useHeadlessDatePicker } from "./../useHeadlessDatePicker";
 import DateFnsAdapter from "@date-io/date-fns";
-import FaIR from "date-fns/locale/fa-IR";
+import { faIR } from "date-fns/locale/fa-IR";
+import { useHeadlessDatePicker } from "./../useHeadlessDatePicker";
 
 describe("useHeadlessDatePicker", () => {
-  const adapter = new DateFnsAdapter({ locale: FaIR });
+  const adapter = new DateFnsAdapter({ locale: faIR });
   it("should select a single date", () => {
     const { selected } = useHeadlessDatePicker(adapter, {
       selectType: "single",
