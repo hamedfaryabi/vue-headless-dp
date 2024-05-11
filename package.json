@@ -1,7 +1,7 @@
 {
   "name": "vue-headless-dp",
   "private": false,
-  "version": "0.5.1",
+  "version": "next",
   "description": "Vue Headless Date Picker is a no ui date picker for vuejs 3",
   "type": "module",
   "author": "Hamed Faryabi",
@@ -17,12 +17,13 @@
     "test": "jest"
   },
   "peerDependencies": {
-    "vue": "^3.3.0",
-    "@date-io/core": "^3.0.0"
+    "@date-io/core": "^3.0.0",
+    "vue": "^3.3.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.24.5",
     "@date-io/date-fns": "^3.0.0",
+    "@date-io/date-fns-jalali": "^3.0.0",
     "@jest/types": "^29.6.3",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.12.10",
@@ -30,7 +31,7 @@
     "@vue/test-utils": "^2.4.6",
     "babel-jest": "^29.7.0",
     "date-fns": "^3.6.0",
-    "date-fns-jalali": "3.6.0-0",
+    "date-fns-jalali": "2.30.0-0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "ts-jest": "^29.1.2",
@@ -38,9 +39,9 @@
     "typescript": "^5.4.5",
     "vite": "^5.2.11",
     "vite-plugin-dts": "^3.9.1",
+    "vue": "^3.4.27",
     "vue-jest": "^3.0.7",
-    "vue-tsc": "^2.0.16",
-    "vue": "^3.4.27"
+    "vue-tsc": "^2.0.16"
   },
   "dependencies": {
     "@date-io/core": "^3.0.0",
