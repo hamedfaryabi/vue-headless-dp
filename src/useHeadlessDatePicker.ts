@@ -10,22 +10,14 @@ import type { DPDay, DPMonth, DPOptions, DPWeek } from "./datepicker";
  * @param {IUtils<Date, any>} adapter - The date adapter.
  * @returns {number} - The week index.
  */
-function getWeekIndex(date: Date, adapter: IUtils<Date, any>): number {
+function getWeekNumber(date: Date, adapter: IUtils<Date, any>): number {
   const monthStart = adapter.startOfMonth(date);
-  const currentDate = date.getDate();
+  const monthFirstWeekStart = adapter.startOfWeek(monthStart);
+  const diffOfStarts = adapter.getDiff(monthStart, monthFirstWeekStart, 'days') - 1;
+  const day = adapter.getDate(date);
 
-  let weekIndex = 0;
-  let currentDay = monthStart;
-
-  while (currentDay.getDate() <= currentDate) {
-    currentDay = adapter.addDays(currentDay, 1);
-    if (currentDay.getDay() === 0) {
-      weekIndex++;
-    }
-  }
-
-  return weekIndex;
-}
+  return Math.floor((day + diffOfStarts) / 7) + 1
+} 
 
 /**
  * Retrieves each day within the specified date interval.
@@ -50,13 +42,20 @@ function getEachDayOfInterval(
     return [start];
   }
 
-  const days: Date[] = [];
-  while (adapter.isBeforeDay(current, end)) {
-    days.push(current);
-    current = adapter.addDays(current, 1);
-  }
+  const diff = adapter.getDiff(end, start, 'days') + 1;
+  const days = new Array<Date>(diff).fill(start);
+  // const days: Date[] = [];
+  // while (!adapter.isAfterDay(current, end)) {
+  //   days.push(current);
+  //   current = adapter.addDays(current, 1);
+  // }
 
-  return days;
+  const result = days.map((val, idx) => {
+    const day = adapter.addDays(val, idx);
+    return day;
+  });
+
+  return result;
 }
 
 export function useHeadlessDatePicker(
@@ -176,23 +175,23 @@ export function useHeadlessDatePicker(
 
     const isBelowMinDate = state.minDate
       ? adapter.isBefore(
-          adapter.startOfDay(date),
-          adapter.startOfDay(state.minDate)
-        )
+        adapter.startOfDay(date),
+        adapter.startOfDay(state.minDate)
+      )
       : false;
 
     const isAboveMaxDate = state.maxDate
       ? adapter.isAfter(
-          adapter.startOfDay(date),
-          adapter.startOfDay(state.maxDate)
-        )
+        adapter.startOfDay(date),
+        adapter.startOfDay(state.maxDate)
+      )
       : false;
 
     return {
       date,
       monthindex: adapter.getDate(date),
       today: adapter.isSameDay(date, new Date()),
-      weekIndex: getWeekIndex(date, adapter),
+      weekIndex: getWeekNumber(date, adapter),
       weekName: {
         full: adapter.format(date, "weekday"),
         short: adapter.format(date, "weekdayShort"),
@@ -214,9 +213,11 @@ export function useHeadlessDatePicker(
    */
   const datesToWeeks = (dates: Date[]): DPWeek[] => {
     dates.every((date) => checkDate(date));
+
     const daysByWeeks = dates.reduce((acc: DPDay[][], date) => {
-      const weekNumber = getWeekIndex(date, adapter);
+      const weekNumber = getWeekNumber(date, adapter);
       const day: DPDay = dateToDay(date);
+
 
       if (!acc[weekNumber - 1]) acc[weekNumber - 1] = [];
       acc[weekNumber - 1].push(day);
@@ -224,10 +225,12 @@ export function useHeadlessDatePicker(
       return acc;
     }, []);
 
-    return daysByWeeks.map((days) => ({
+
+    const result = daysByWeeks.map((days) => ({
       days: days,
-      number: getWeekIndex(days[0].date, adapter),
+      number: getWeekNumber(days[0].date, adapter),
     }));
+    return result;
   };
 
   /**
@@ -238,8 +241,8 @@ export function useHeadlessDatePicker(
    */
   const getMonthOfDate = (date: Date): DPMonth => {
     checkDate(date);
-    const monthStart = adapter.startOfMonth(date),
-      monthEnd = adapter.endOfMonth(date);
+    const monthStart = adapter.startOfMonth(date);
+    const monthEnd = adapter.endOfMonth(date);
 
     const allDays = getEachDayOfInterval(monthStart, monthEnd, adapter);
     const weeks: DPWeek[] = datesToWeeks(allDays);
@@ -281,7 +284,6 @@ export function useHeadlessDatePicker(
       number: adapter.getMonth(sampleDate) + 1,
       year: adapter.getYear(sampleDate),
     };
-
     return month;
   };
 
