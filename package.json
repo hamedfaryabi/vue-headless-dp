@@ -1,7 +1,7 @@
 {
   "name": "vue-headless-dp",
   "private": false,
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Vue Headless Date Picker is a no ui date picker for vuejs 3",
   "type": "module",
   "author": "Hamed Faryabi",
