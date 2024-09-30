@@ -8,9 +8,11 @@ export default defineConfig({
   plugins: [
     vue(),
     dts({
-      insertTypesEntry: true,
+      // insertTypesEntry: true,
       copyDtsFiles: true,
       rollupTypes: true,
+      // entryRoot: 'src',
+      outDir: 'dist/types'
     }),
   ],
   build: {

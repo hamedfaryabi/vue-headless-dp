@@ -1,6 +1,6 @@
 import DateFnsAdapter from "@date-io/date-fns";
 import { faIR } from "date-fns/locale/fa-IR";
-import { useHeadlessDatePicker } from "./../useHeadlessDatePicker";
+import { useHeadlessDatePicker } from "./../index";
 
 describe("useHeadlessDatePicker", () => {
   const adapter = new DateFnsAdapter({ locale: faIR });
